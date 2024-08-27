@@ -15,6 +15,8 @@
 		C80A0E452C7D402A0032CCF1 /* BPM_BoogalooUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C80A0E442C7D402A0032CCF1 /* BPM_BoogalooUITests.swift */; };
 		C80A0E472C7D402A0032CCF1 /* BPM_BoogalooUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C80A0E462C7D402A0032CCF1 /* BPM_BoogalooUITestsLaunchTests.swift */; };
 		C80A0E542C7D4E6E0032CCF1 /* NumberPadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C80A0E532C7D4E6E0032CCF1 /* NumberPadView.swift */; };
+		C85F97C82C7D997900370F82 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C85F97C72C7D997900370F82 /* SettingsView.swift */; };
+		C85F97CA2C7D9B5C00370F82 /* AbstractShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = C85F97C92C7D9B5C00370F82 /* AbstractShape.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,6 +48,8 @@
 		C80A0E442C7D402A0032CCF1 /* BPM_BoogalooUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BPM_BoogalooUITests.swift; sourceTree = "<group>"; };
 		C80A0E462C7D402A0032CCF1 /* BPM_BoogalooUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BPM_BoogalooUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		C80A0E532C7D4E6E0032CCF1 /* NumberPadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberPadView.swift; sourceTree = "<group>"; };
+		C85F97C72C7D997900370F82 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		C85F97C92C7D9B5C00370F82 /* AbstractShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AbstractShape.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,6 +105,8 @@
 				C80A0E2D2C7D40290032CCF1 /* Assets.xcassets */,
 				C80A0E2F2C7D40290032CCF1 /* Preview Content */,
 				C80A0E532C7D4E6E0032CCF1 /* NumberPadView.swift */,
+				C85F97C72C7D997900370F82 /* SettingsView.swift */,
+				C85F97C92C7D9B5C00370F82 /* AbstractShape.swift */,
 			);
 			path = "BPM Boogaloo";
 			sourceTree = "<group>";
@@ -260,7 +266,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C85F97CA2C7D9B5C00370F82 /* AbstractShape.swift in Sources */,
 				C80A0E2C2C7D40280032CCF1 /* ContentView.swift in Sources */,
+				C85F97C82C7D997900370F82 /* SettingsView.swift in Sources */,
 				C80A0E542C7D4E6E0032CCF1 /* NumberPadView.swift in Sources */,
 				C80A0E2A2C7D40280032CCF1 /* BPM_BoogalooApp.swift in Sources */,
 			);
@@ -433,6 +441,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIUserInterfaceStyle = Dark;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -461,6 +470,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIUserInterfaceStyle = Dark;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

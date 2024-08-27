@@ -1,37 +1,47 @@
 import SwiftUI
 
 struct ContentView: View {
+    @AppStorage("isDarkMode") var isDarkMode: Bool = true // Persistent storage for Dark Mode
     @State private var bpmInput: String = ""
     @State private var isTapping: Bool = false
     @State private var tapTimes: [Date] = []
     @State private var lastTapTime: Date? = nil
     @State private var bpmLocked: Bool = false
+    @State private var showSettings = false
     @State private var transitionTips: [TransitionTip] = [
         TransitionTip(title: "Halftime", multiplier: 0.5),
         TransitionTip(title: "Doubletime", multiplier: 2.0),
         TransitionTip(title: "Range", range: true),
-        TransitionTip(title: "3/4 Loop Up", multiplier: 4/3),
-        TransitionTip(title: "3/4 Loop Down", multiplier: 3/4)
+        TransitionTip(title: "¾ Loop Up", multiplier: 4/3),
+        TransitionTip(title: "¾ Loop Down", multiplier: 3/4)
     ]
     @State private var isEditing: Bool = false
 
     var body: some View {
         VStack(spacing: 20) {
+            HStack {
+                AbstractShape()
+                    .onTapGesture {
+                        showSettings.toggle()
+                    }
+                    .padding()
+
+                Spacer()
+            }
+
             // BPM Input Field with Custom Placeholder
             ZStack(alignment: .center) {
-                // Placeholder
                 if bpmInput.isEmpty && !isTapping {
                     Text("BPM")
                         .font(.system(size: 100, weight: .bold))
                         .foregroundColor(.gray)
                 }
 
-                // Input field
                 TextField("", text: $bpmInput)
                     .keyboardType(.numberPad)
                     .font(.system(size: 100, weight: .bold))
                     .multilineTextAlignment(.center)
-                    .foregroundColor(.primary) // Use the system's primary color
+                    .foregroundColor(.primary)
                     .onChange(of: bpmInput) { oldValue, newValue in
                         if newValue.count > 3 {
                             bpmInput = String(newValue.prefix(3))
@@ -77,14 +87,13 @@ struct ContentView: View {
 
                     Spacer()
 
-                    // Toggle Reordering/Removing
                     Button(action: {
                         isEditing.toggle()
                     }) {
                         Image(systemName: "ellipsis.circle")
                             .font(.title2)
                     }
-                    .padding(.top, 30) // Align with text
+                    .padding(.top, 30)
                 }
 
                 List {
@@ -119,8 +128,13 @@ struct ContentView: View {
             Spacer()
         }
         .padding()
+        .preferredColorScheme(isDarkMode ? .dark : .light) // Apply the color scheme based on user preference
         .onAppear {
             setupTapDetection()
+        }
+        // Present the SettingsView modally
+        .sheet(isPresented: $showSettings) {
+            SettingsView(showSettings: $showSettings)
         }
     }
 
@@ -251,7 +265,7 @@ struct TransitionTipRow: View {
 }
 
 struct ContentView_Previews: PreviewProvider {
-    static var previews: ContentView {
+    static var previews: some View {
         ContentView()
     }
 }
