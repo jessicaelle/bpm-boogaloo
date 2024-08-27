@@ -32,7 +32,7 @@ struct ContentView: View {
                     .font(.system(size: 100, weight: .bold))
                     .multilineTextAlignment(.center)
                     .foregroundColor(.primary) // Use the system's primary color
-                    .onChange(of: bpmInput) { newValue in
+                    .onChange(of: bpmInput) { oldValue, newValue in
                         if newValue.count > 3 {
                             bpmInput = String(newValue.prefix(3))
                         }
@@ -40,7 +40,7 @@ struct ContentView: View {
                             isTapping = false
                             bpmLocked = false
                             tapTimes.removeAll()
-                            print("BPM input manually set: \(bpmInput)")
+                            print("BPM input manually set: \(newValue)")
                         }
                     }
             }
@@ -89,13 +89,27 @@ struct ContentView: View {
 
                 List {
                     ForEach(transitionTips.indices, id: \.self) { index in
-                        TransitionTipRow(
-                            title: transitionTips[index].title,
-                            calculation: transitionTips[index].range ? rangeText() : "\(calculatedBPM(multiplier: transitionTips[index].multiplier ?? 1.0)) BPM"
-                        )
+                        if !transitionTips[index].hidden || isEditing {
+                            HStack {
+                                if isEditing {
+                                    Button(action: {
+                                        withAnimation {
+                                            transitionTips[index].hidden.toggle()
+                                        }
+                                    }) {
+                                        Image(systemName: transitionTips[index].hidden ? "eye" : "eye.slash")
+                                            .foregroundColor(transitionTips[index].hidden ? .green : .red)
+                                    }
+                                }
+
+                                TransitionTipRow(
+                                    title: transitionTips[index].title,
+                                    calculation: transitionTips[index].range ? rangeText() : "\(calculatedBPM(multiplier: transitionTips[index].multiplier ?? 1.0)) BPM"
+                                )
+                            }
+                        }
                     }
                     .onMove(perform: moveTip)
-                    .onDelete(perform: deleteTip)
                 }
                 .listStyle(PlainListStyle())
                 .environment(\.editMode, isEditing ? .constant(.active) : .constant(.inactive))
@@ -199,6 +213,7 @@ struct TransitionTip: Identifiable {
     let title: String
     let multiplier: Double?
     let range: Bool
+    var hidden: Bool = false // New property to track hidden state
 
     init(title: String, multiplier: Double) {
         self.title = title
@@ -212,6 +227,7 @@ struct TransitionTip: Identifiable {
         self.range = range
     }
 }
+
 
 struct TransitionTipRow: View {
     let title: String
