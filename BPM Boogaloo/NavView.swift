@@ -2,23 +2,26 @@ import SwiftUI
 
 struct NavView: View {
     @Binding var showSettings: Bool
-    @State private var countdownTime: TimeInterval? = nil
-    
+    @Binding var countdownTime: TimeInterval?
+
     var body: some View {
         TabView {
+            // ContentView Tab
             ContentView(showSettings: $showSettings, countdownTime: $countdownTime)
                 .tabItem {
                     Label("BPM", systemImage: "metronome")
                 }
-
+            
+            // ClockView Tab
             ClockView(countdownTime: $countdownTime)
                 .tabItem {
                     Label("Clock", systemImage: "clock")
                 }
 
-            SettingsView(showSettings: $showSettings)
+            // SettingsView Tab
+            SettingsView()
                 .tabItem {
-                    Label("Settings", systemImage: "gear")
+                    Label("Settings", systemImage: "gearshape")
                 }
         }
     }
@@ -26,6 +29,6 @@ struct NavView: View {
 
 struct NavView_Previews: PreviewProvider {
     static var previews: some View {
-        NavView(showSettings: .constant(false))
+        NavView(showSettings: .constant(false), countdownTime: .constant(nil))
     }
 }

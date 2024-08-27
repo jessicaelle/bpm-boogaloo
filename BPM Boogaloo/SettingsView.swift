@@ -1,68 +1,50 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @Binding var showSettings: Bool
     @AppStorage("isDarkMode") var isDarkMode: Bool = true
     @AppStorage("wholeNumberBPM") var wholeNumberBPM: Bool = true
-    @AppStorage("greenLimit") var greenLimit: Double = 10.0
-    @AppStorage("orangeLimit") var orangeLimit: Double = 5.0
+    @AppStorage("orangeAlertMinutes") var orangeAlertMinutes: Double = 10
+    @AppStorage("redAlertMinutes") var redAlertMinutes: Double = 5
 
     var body: some View {
-        NavigationView {
+        NavigationView {  // Wrap the form in NavigationView for proper navigation title
             Form {
-                Section(header: Text("Appearance")) {
-                    Toggle(isOn: $isDarkMode) {
-                        Text("Dark Mode")
-                    }
+                // Display Section
+                Section(header: Text("Display")) {
+                    Toggle("Dark Mode", isOn: $isDarkMode)
+                    Toggle("Whole Number BPMs", isOn: $wholeNumberBPM)
                 }
 
-                Section(header: Text("Countdown")) {
-                    VStack(alignment: .leading) {
-                        Text("Set Time Limits")
-                            .font(.headline)
-                        Text("Green: More than")
-                        HStack {
-                            Slider(value: $greenLimit, in: 5...30, step: 1)
-                            Text("\(Int(greenLimit)) minutes")
-                        }
-                        Text("Orange: Between")
-                        HStack {
-                            Slider(value: $orangeLimit, in: 1...greenLimit - 1, step: 1)
-                            Text("\(Int(orangeLimit)) minutes")
-                        }
-                        Text("Red: Less than \(Int(orangeLimit)) minutes")
-                            .foregroundColor(.red)
+                // Clock Section
+                Section(header: Text("Clock")) {
+                    HStack {
+                        Text("Orange Alert")
+                        Spacer()
+                        TextField("", value: $orangeAlertMinutes, formatter: NumberFormatter())
+                            .keyboardType(.numberPad)
+                            .frame(width: 50)
+                            .multilineTextAlignment(.trailing)
+                        Text("Minutes")
                     }
-                    .padding(.vertical, 5)
-                }
 
-                Section(header: Text("BPM Settings")) {
-                    Toggle(isOn: $wholeNumberBPM) {
-                        Text("Whole Number BPMs")
-                    }
-                    .onChange(of: wholeNumberBPM) { _ in
-                        NotificationCenter.default.post(name: .bpmSettingChanged, object: nil)
+                    HStack {
+                        Text("Red Alert")
+                        Spacer()
+                        TextField("", value: $redAlertMinutes, formatter: NumberFormatter())
+                            .keyboardType(.numberPad)
+                            .frame(width: 50)
+                            .multilineTextAlignment(.trailing)
+                        Text("Minutes")
                     }
                 }
             }
-            .navigationTitle("Settings")
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Done") {
-                        showSettings = false
-                    }
-                }
-            }
+            .navigationTitle("Settings")  // Ensure navigation title is correctly set
         }
     }
 }
 
-extension Notification.Name {
-    static let bpmSettingChanged = Notification.Name("bpmSettingChanged")
-}
-
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
-        SettingsView(showSettings: .constant(true))
+        SettingsView()
     }
 }

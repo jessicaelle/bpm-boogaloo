@@ -63,8 +63,9 @@ struct TransitionTipsView: View {
                             
                             TransitionTipRow(
                                 title: transitionTips[index].title,
-                                calculation: transitionTips[index].range ? rangeText() : "\(formattedBPM(multiplier: transitionTips[index].multiplier ?? 1.0)) BPM",
-                                isEditing: isEditing
+                                calculation: bpmInput.isEmpty ? "- BPM" : (transitionTips[index].range ? rangeText() : "\(formattedBPM(multiplier: transitionTips[index].multiplier ?? 1.0)) BPM"),
+                                isEditing: isEditing,
+                                bpmPlaceholderColor: bpmInput.isEmpty ? .gray : .primary // Apply color change logic
                             )
                         }
                     }
@@ -81,13 +82,13 @@ struct TransitionTipsView: View {
 
     // Helper methods
     private func formattedBPM(multiplier: Double) -> String {
-        guard let bpm = Double(bpmInput), bpm > 0 else { return "0" }
+        guard let bpm = Double(bpmInput), bpm > 0 else { return "- BPM" }
         let calculatedBPM = bpm * multiplier
         return wholeNumberBPM ? String(Int(round(calculatedBPM))) : String(format: "%.1f", calculatedBPM)
     }
     
     private func rangeText() -> String {
-        guard let bpm = Double(bpmInput), bpm > 0 else { return "0 to 0 BPM" }
+        guard let bpm = Double(bpmInput), bpm > 0 else { return "- BPM" }
         let lower = bpm * 0.94
         let upper = bpm * 1.06
         return wholeNumberBPM ? "~\(Int(round(lower))) to ~\(Int(round(upper))) BPM" : "\(String(format: "%.1f", lower)) to \(String(format: "%.1f", upper)) BPM"
@@ -105,7 +106,7 @@ struct TransitionTipsView_Previews: PreviewProvider {
                 TransitionTip(title: "Halftime", multiplier: 0.5),
                 TransitionTip(title: "Doubletime", multiplier: 2.0)
             ]),
-            bpmInput: .constant("120"),
+            bpmInput: .constant(""),
             isEditing: .constant(false)
         )
     }

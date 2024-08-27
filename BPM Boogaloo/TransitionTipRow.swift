@@ -4,24 +4,15 @@ struct TransitionTipRow: View {
     let title: String
     let calculation: String
     let isEditing: Bool
+    let bpmPlaceholderColor: Color // Color for the BPM label
 
     var body: some View {
         HStack {
             Text(title)
-                .font(.body)
-                .padding(.vertical, 4)
-                .padding(.horizontal)
-
+                .foregroundColor(isEditing ? .primary : .gray)
             Spacer()
-
-            if !isEditing {
-                Text(calculation)
-                    .font(.body)
-                    .padding(.vertical, 4)
-                    .padding(.horizontal)
-                    .background(Color(UIColor.systemBackground))
-                    .cornerRadius(10)
-            }
+            Text(calculation.isEmpty ? "- BPM" : calculation) // Use a short hyphen here
+                .foregroundColor(bpmPlaceholderColor)
         }
     }
 }
@@ -30,10 +21,9 @@ struct TransitionTipRow_Previews: PreviewProvider {
     static var previews: some View {
         TransitionTipRow(
             title: "Halftime",
-            calculation: "60 BPM",
-            isEditing: false
+            calculation: "",
+            isEditing: false,
+            bpmPlaceholderColor: .gray
         )
-        .previewLayout(.sizeThatFits)
-        .padding()
     }
 }
