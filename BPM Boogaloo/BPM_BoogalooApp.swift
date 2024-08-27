@@ -9,9 +9,13 @@ import SwiftUI
 
 @main
 struct BPM_BoogalooApp: App {
+    @State private var showSettings = false
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            NavView(showSettings: $showSettings)
         }
     }
 }
+
+

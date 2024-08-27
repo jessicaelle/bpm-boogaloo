@@ -2,25 +2,24 @@ import SwiftUI
 
 struct SettingsView: View {
     @AppStorage("isDarkMode") var isDarkMode: Bool = true
+    @AppStorage("sliderPosition") var sliderPosition: String = "Right" // New setting for slider position
     @Binding var showSettings: Bool // Binding to control the modal presentation
 
-    var body: some View {
-        VStack {
-            HStack {
-                // AbstractShape in the top left corner to close the modal
-                AbstractShape()
-                    .onTapGesture {
-                        showSettings = false // Dismiss the modal
-                    }
-                    .padding()
+    let sliderPositions = ["Left", "Right"]
 
-                Spacer()
-            }
+    var body: some View {
 
             Form {
                 // Dark Mode Toggle
                 Toggle(isOn: $isDarkMode) {
                     Text("Dark Mode")
+                }
+
+                // Slider Position Picker
+                Picker("Pitch Slider Position", selection: $sliderPosition) {
+                    ForEach(sliderPositions, id: \.self) {
+                        Text($0)
+                    }
                 }
 
                 // Donate Link
@@ -31,7 +30,8 @@ struct SettingsView: View {
             .preferredColorScheme(isDarkMode ? .dark : .light)
         }
     }
-}
+
+
 
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {

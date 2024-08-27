@@ -1,13 +1,20 @@
 import SwiftUI
 
 struct ContentView: View {
-    @AppStorage("isDarkMode") var isDarkMode: Bool = true // Persistent storage for Dark Mode
+    @Binding var showSettings: Bool
+    @Binding var countdownTime: TimeInterval? // Binding for the countdown time
+    @AppStorage("isDarkMode") var isDarkMode: Bool = true
+    @AppStorage("sliderPosition") var sliderPosition: String = "Right"
     @State private var bpmInput: String = ""
     @State private var isTapping: Bool = false
     @State private var tapTimes: [Date] = []
     @State private var lastTapTime: Date? = nil
     @State private var bpmLocked: Bool = false
-    @State private var showSettings = false
+    @State private var pitchShift: Double = 0 {
+        didSet {
+            updateBPMWithPitchShift()
+        }
+    }
     @State private var transitionTips: [TransitionTip] = [
         TransitionTip(title: "Halftime", multiplier: 0.5),
         TransitionTip(title: "Doubletime", multiplier: 2.0),
@@ -19,126 +26,108 @@ struct ContentView: View {
 
     var body: some View {
         VStack(spacing: 20) {
+            // Add the CountdownBannerView, but only show it if the countdown time is set
+            if countdownTime != nil {
+                CountdownBannerView(countdownTime: $countdownTime)
+            }
+
             HStack {
-                AbstractShape()
-                    .onTapGesture {
-                        showSettings.toggle()
+                if sliderPosition == "Left" {
+                    pitchSlider
+                }
+
+                ZStack(alignment: .center) {
+                    if bpmInput.isEmpty && !isTapping {
+                        Text("BPM")
+                            .font(.system(size: 100, weight: .bold))
+                            .foregroundColor(.gray)
                     }
-                    .padding()
 
-                Spacer()
-            }
-
-            // BPM Input Field with Custom Placeholder
-            ZStack(alignment: .center) {
-                if bpmInput.isEmpty && !isTapping {
-                    Text("BPM")
+                    TextField("", text: $bpmInput)
+                        .keyboardType(.numberPad)
                         .font(.system(size: 100, weight: .bold))
-                        .foregroundColor(.gray)
-                }
-
-                TextField("", text: $bpmInput)
-                    .keyboardType(.numberPad)
-                    .font(.system(size: 100, weight: .bold))
-                    .multilineTextAlignment(.center)
-                    .foregroundColor(.primary)
-                    .onChange(of: bpmInput) { oldValue, newValue in
-                        if newValue.count > 3 {
-                            bpmInput = String(newValue.prefix(3))
-                        }
-                        if !newValue.isEmpty {
-                            isTapping = false
-                            bpmLocked = false
-                            tapTimes.removeAll()
-                            print("BPM input manually set: \(newValue)")
-                        }
-                    }
-            }
-            .padding()
-            .background(Color(UIColor.systemBackground))
-            .cornerRadius(10)
-            .padding(.horizontal)
-
-            // TAP/RESET Buttons
-            HStack(spacing: 20) {
-                Button(action: {
-                    if bpmLocked {
-                        resetBPM()
-                    } else {
-                        registerTap()
-                    }
-                }) {
-                    Text(bpmLocked ? "RESET" : "TAP")
-                        .font(.title2)
-                        .padding()
-                        .frame(maxWidth: .infinity)
-                        .background(bpmLocked ? Color.red : Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
-                }
-            }
-
-            // Transition Tips Section
-            VStack(alignment: .leading, spacing: 10) {
-                HStack {
-                    Text("TRANSITION TIPS")
-                        .font(.headline)
-                        .padding(.top, 30)
-
-                    Spacer()
-
-                    Button(action: {
-                        isEditing.toggle()
-                    }) {
-                        Image(systemName: "ellipsis.circle")
-                            .font(.title2)
-                    }
-                    .padding(.top, 30)
-                }
-
-                List {
-                    ForEach(transitionTips.indices, id: \.self) { index in
-                        if !transitionTips[index].hidden || isEditing {
-                            HStack {
-                                if isEditing {
-                                    Button(action: {
-                                        withAnimation {
-                                            transitionTips[index].hidden.toggle()
-                                        }
-                                    }) {
-                                        Image(systemName: transitionTips[index].hidden ? "eye" : "eye.slash")
-                                            .foregroundColor(transitionTips[index].hidden ? .green : .red)
-                                    }
-                                }
-
-                                TransitionTipRow(
-                                    title: transitionTips[index].title,
-                                    calculation: transitionTips[index].range ? rangeText() : "\(calculatedBPM(multiplier: transitionTips[index].multiplier ?? 1.0)) BPM"
-                                )
+                        .multilineTextAlignment(.center)
+                        .foregroundColor(.primary)
+                        .onChange(of: bpmInput) { oldValue, newValue in
+                            if newValue.count > 3 {
+                                bpmInput = String(newValue.prefix(3))
+                            }
+                            if !newValue.isEmpty {
+                                isTapping = false
+                                bpmLocked = false
+                                tapTimes.removeAll()
+                                print("BPM input manually set: \(newValue)")
                             }
                         }
-                    }
-                    .onMove(perform: moveTip)
                 }
-                .listStyle(PlainListStyle())
-                .environment(\.editMode, isEditing ? .constant(.active) : .constant(.inactive))
+                .padding()
+                .background(Color(UIColor.systemBackground))
+                .cornerRadius(10)
+                .padding(.horizontal)
+
+                if sliderPosition == "Right" {
+                    pitchSlider
+                }
             }
-            .padding(.horizontal)
+
+            BPMTapperView(bpmInput: $bpmInput, bpmLocked: $bpmLocked)
+
+            // Transition Tips Section
+            TransitionTipsView(
+                transitionTips: $transitionTips, bpmInput: $bpmInput,  // <-- Corrected order
+                isEditing: $isEditing
+            )
 
             Spacer()
         }
         .padding()
-        .preferredColorScheme(isDarkMode ? .dark : .light) // Apply the color scheme based on user preference
+        .preferredColorScheme(isDarkMode ? .dark : .light)
         .onAppear {
             setupTapDetection()
         }
-        // Present the SettingsView modally
-        .sheet(isPresented: $showSettings) {
-            SettingsView(showSettings: $showSettings)
-        }
     }
 
-    // Function to calculate BPM based on a multiplier
+    private var pitchSlider: some View {
+        VStack {
+            Text("Pitch")
+                .font(.caption)
+                .foregroundColor(.gray)
+            Slider(value: $pitchShift, in: -6...6, step: 0.1, onEditingChanged: { editing in
+                if !editing && bpmInput.isEmpty {
+                    withAnimation {
+                        flashBPMPlaceholder()
+                    }
+                } else if !editing {
+                    updateBPMWithPitchShift()
+                }
+            })
+            .rotationEffect(.degrees(-90))
+            .frame(height: 200)
+            .padding(.horizontal)
+            .background(Color(UIColor.systemGray6))
+            .cornerRadius(10)
+            .padding(.horizontal)
+            .frame(width: 50)
+            Text("\(pitchShift, specifier: "%.1f")%")
+                .font(.caption)
+                .foregroundColor(.gray)
+        }
+    }
+    
+    private func flashBPMPlaceholder() {
+        withAnimation(Animation.easeInOut(duration: 0.3).repeatCount(3, autoreverses: true)) {
+            bpmInput = "BPM"
+        }
+        bpmInput = ""
+    }
+
+    private func updateBPMWithPitchShift() {
+        guard let originalBPM = Double(bpmInput) else { return }
+        let newBPM = originalBPM * (1 + pitchShift / 100)
+        bpmInput = String(Int(round(newBPM)))
+        print("BPM updated with pitch shift: \(bpmInput)")
+    }
+
     private func calculatedBPM(multiplier: Double) -> Int {
         if let bpm = Int(bpmInput), bpm > 0 {
             return Int(Double(bpm) * multiplier)
@@ -146,7 +135,6 @@ struct ContentView: View {
         return 0
     }
 
-    // Function to generate range text
     private func rangeText() -> String {
         if let bpm = Int(bpmInput), bpm > 0 {
             let lower = Int(Double(bpm) * 0.94)
@@ -185,12 +173,11 @@ struct ContentView: View {
 
         let bpm = 60.0 / averageInterval
         bpmInput = "\(Int(round(bpm)))"
-        bpmLocked = false // Keep the BPM unlocked to continue rolling average
+        bpmLocked = false
         print("BPM calculated: \(bpmInput)")
 
-        // Continue updating every 4 taps
         if tapTimes.count > 4 {
-            tapTimes.removeFirst(tapTimes.count - 12) // Keep only the most recent 12 taps to maintain a rolling average
+            tapTimes.removeFirst(tapTimes.count - 12)
         }
     }
 
@@ -222,50 +209,8 @@ struct ContentView: View {
     }
 }
 
-struct TransitionTip: Identifiable {
-    let id = UUID()
-    let title: String
-    let multiplier: Double?
-    let range: Bool
-    var hidden: Bool = false // New property to track hidden state
-
-    init(title: String, multiplier: Double) {
-        self.title = title
-        self.multiplier = multiplier
-        self.range = false
-    }
-
-    init(title: String, range: Bool) {
-        self.title = title
-        self.multiplier = nil
-        self.range = range
-    }
-}
-
-
-struct TransitionTipRow: View {
-    let title: String
-    let calculation: String
-
-    var body: some View {
-        HStack {
-            Text(title)
-                .font(.body)
-                .padding()
-
-            Spacer()
-
-            Text(calculation)
-                .font(.body)
-                .padding()
-                .background(Color(UIColor.systemBackground))
-                .cornerRadius(10)
-        }
-    }
-}
-
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        ContentView(showSettings: .constant(false), countdownTime: .constant(nil))
     }
 }
