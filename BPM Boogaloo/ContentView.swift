@@ -5,6 +5,7 @@ struct ContentView: View {
     @Binding var countdownTime: TimeInterval? // Binding for the countdown time
     @AppStorage("isDarkMode") var isDarkMode: Bool = true
     @AppStorage("sliderPosition") var sliderPosition: String = "Right"
+    @AppStorage("wholeNumberBPM") var wholeNumberBPM: Bool = true // AppStorage for wholeNumberBPM setting
     @State private var bpmInput: String = ""
     @State private var isTapping: Bool = false
     @State private var tapTimes: [Date] = []
@@ -44,13 +45,15 @@ struct ContentView: View {
                     }
 
                     TextField("", text: $bpmInput)
-                        .keyboardType(.numberPad)
+                        .keyboardType(wholeNumberBPM ? .numberPad : .decimalPad) // Allow decimals if wholeNumberBPM is false
                         .font(.system(size: 100, weight: .bold))
                         .multilineTextAlignment(.center)
                         .foregroundColor(.primary)
+                        .minimumScaleFactor(0.3)  // Added to resize the font automatically
+                        .lineLimit(1)             // Ensure it stays on one line
                         .onChange(of: bpmInput) { oldValue, newValue in
-                            if newValue.count > 3 {
-                                bpmInput = String(newValue.prefix(3))
+                            if newValue.count > 5 {
+                                bpmInput = String(newValue.prefix(5))
                             }
                             if !newValue.isEmpty {
                                 isTapping = false
@@ -74,8 +77,10 @@ struct ContentView: View {
 
             // Transition Tips Section
             TransitionTipsView(
-                transitionTips: $transitionTips, bpmInput: $bpmInput,  // <-- Corrected order
-                isEditing: $isEditing
+                transitionTips: $transitionTips,
+                bpmInput: $bpmInput,
+                isEditing: $isEditing,
+                wholeNumberBPM: wholeNumberBPM // Pass the actual Bool value, not a binding
             )
 
             Spacer()
@@ -113,7 +118,7 @@ struct ContentView: View {
                 .foregroundColor(.gray)
         }
     }
-    
+
     private func flashBPMPlaceholder() {
         withAnimation(Animation.easeInOut(duration: 0.3).repeatCount(3, autoreverses: true)) {
             bpmInput = "BPM"
@@ -124,25 +129,39 @@ struct ContentView: View {
     private func updateBPMWithPitchShift() {
         guard let originalBPM = Double(bpmInput) else { return }
         let newBPM = originalBPM * (1 + pitchShift / 100)
-        bpmInput = String(Int(round(newBPM)))
+        bpmInput = formattedBPM(newBPM)
         print("BPM updated with pitch shift: \(bpmInput)")
     }
 
-    private func calculatedBPM(multiplier: Double) -> Int {
-        if let bpm = Int(bpmInput), bpm > 0 {
-            return Int(Double(bpm) * multiplier)
+    private func calculatedBPM(multiplier: Double) -> String {
+        if let bpm = Double(bpmInput), bpm > 0 {
+            return formattedBPM(bpm * multiplier)
         }
-        return 0
+        return "0"
     }
 
     private func rangeText() -> String {
-        if let bpm = Int(bpmInput), bpm > 0 {
-            let lower = Int(Double(bpm) * 0.94)
-            let upper = Int(Double(bpm) * 1.06)
-            return "~\(lower) to ~\(upper) BPM"
+        if let bpm = Double(bpmInput), bpm > 0 {
+            let lower = bpm * 0.94
+            let upper = bpm * 1.06
+
+            if wholeNumberBPM {
+                // Use tildes for approximate values when whole number BPMs are on
+                return "~\(formattedBPM(lower)) to ~\(formattedBPM(upper)) BPM"
+            } else {
+                // Exact values without tildes when whole number BPMs are off
+                return "\(formattedBPM(lower)) to \(formattedBPM(upper)) BPM"
+            }
         }
-        return "~0 to ~0 BPM"
+
+        // Default case when there's no BPM established
+        return "0 to 0 BPM"
     }
+
+    private func formattedBPM(_ bpm: Double) -> String {
+        return wholeNumberBPM ? String(Int(round(bpm))) : String(format: "%.1f", bpm)
+    }
+
 
     private func registerTap() {
         guard !bpmLocked else {
@@ -172,7 +191,7 @@ struct ContentView: View {
         let averageInterval = intervals.reduce(0, +) / Double(intervals.count)
 
         let bpm = 60.0 / averageInterval
-        bpmInput = "\(Int(round(bpm)))"
+        bpmInput = formattedBPM(bpm)
         bpmLocked = false
         print("BPM calculated: \(bpmInput)")
 

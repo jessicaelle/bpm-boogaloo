@@ -24,7 +24,8 @@ struct TransitionTipsView: View {
     @Binding var transitionTips: [TransitionTip]
     @Binding var bpmInput: String
     @Binding var isEditing: Bool
-    
+    @AppStorage("wholeNumberBPM") var wholeNumberBPM: Bool = true // AppStorage for wholeNumberBPM setting
+
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
@@ -62,7 +63,7 @@ struct TransitionTipsView: View {
                             
                             TransitionTipRow(
                                 title: transitionTips[index].title,
-                                calculation: transitionTips[index].range ? rangeText() : "\(calculatedBPM(multiplier: transitionTips[index].multiplier ?? 1.0)) BPM",
+                                calculation: transitionTips[index].range ? rangeText() : "\(formattedBPM(multiplier: transitionTips[index].multiplier ?? 1.0)) BPM",
                                 isEditing: isEditing
                             )
                         }
@@ -79,16 +80,17 @@ struct TransitionTipsView: View {
     }
 
     // Helper methods
-    private func calculatedBPM(multiplier: Double) -> Int {
-        guard let bpm = Int(bpmInput), bpm > 0 else { return 0 }
-        return Int(Double(bpm) * multiplier)
+    private func formattedBPM(multiplier: Double) -> String {
+        guard let bpm = Double(bpmInput), bpm > 0 else { return "0" }
+        let calculatedBPM = bpm * multiplier
+        return wholeNumberBPM ? String(Int(round(calculatedBPM))) : String(format: "%.1f", calculatedBPM)
     }
     
     private func rangeText() -> String {
-        guard let bpm = Int(bpmInput), bpm > 0 else { return "~0 to ~0 BPM" }
-        let lower = Int(Double(bpm) * 0.94)
-        let upper = Int(Double(bpm) * 1.06)
-        return "~\(lower) to ~\(upper) BPM"
+        guard let bpm = Double(bpmInput), bpm > 0 else { return "0 to 0 BPM" }
+        let lower = bpm * 0.94
+        let upper = bpm * 1.06
+        return wholeNumberBPM ? "~\(Int(round(lower))) to ~\(Int(round(upper))) BPM" : "\(String(format: "%.1f", lower)) to \(String(format: "%.1f", upper)) BPM"
     }
     
     private func moveTip(from source: IndexSet, to destination: Int) {
