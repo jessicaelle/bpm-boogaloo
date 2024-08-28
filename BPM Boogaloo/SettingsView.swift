@@ -5,6 +5,9 @@ struct SettingsView: View {
     @AppStorage("wholeNumberBPM") var wholeNumberBPM: Bool = true
     @AppStorage("orangeAlertMinutes") var orangeAlertMinutes: Double = 10
     @AppStorage("redAlertMinutes") var redAlertMinutes: Double = 5
+    @AppStorage("pitchRange") var pitchRange: String = "±6%"  // Default pitch range
+
+    let pitchRanges = ["±6%", "±10%", "±16%", "WIDE"]
 
     var body: some View {
         NavigationView {  // Wrap the form in NavigationView for proper navigation title
@@ -36,6 +39,16 @@ struct SettingsView: View {
                             .multilineTextAlignment(.trailing)
                         Text("Minutes")
                     }
+                }
+                
+                // Pitch Fader Range Section
+                Section(header: Text("Pitch Fader Range")) {
+                    Picker("Select Pitch Range", selection: $pitchRange) {
+                        ForEach(pitchRanges, id: \.self) {
+                            Text($0)
+                        }
+                    }
+                    .pickerStyle(MenuPickerStyle())  // Use dropdown style
                 }
             }
             .navigationTitle("Settings")  // Ensure navigation title is correctly set

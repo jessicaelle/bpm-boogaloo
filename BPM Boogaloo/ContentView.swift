@@ -6,6 +6,7 @@ struct ContentView: View {
     @AppStorage("isDarkMode") var isDarkMode: Bool = true
     @AppStorage("sliderPosition") var sliderPosition: String = "Right"
     @AppStorage("wholeNumberBPM") var wholeNumberBPM: Bool = true
+    @AppStorage("pitchRange") var pitchRange: String = "±6%"  // Pulling the selected pitch range from settings
 
     @State private var bpmInput: String = ""
     @State private var originalBPM: Double = 0.0
@@ -13,11 +14,12 @@ struct ContentView: View {
     @State private var tapTimes: [Date] = []
     @State private var bpmLocked: Bool = false
     @State private var pitchShift: Double = 0.0
+    @State private var bpmColor: Color = .white
 
     @State private var transitionTips: [TransitionTip] = [
+        TransitionTip(title: "Range", range: true),
         TransitionTip(title: "Halftime", multiplier: 0.5),
         TransitionTip(title: "Doubletime", multiplier: 2.0),
-        TransitionTip(title: "Range", range: true),
         TransitionTip(title: "¾ Loop Up", multiplier: 4/3),
         TransitionTip(title: "¾ Loop Down", multiplier: 3/4)
     ]
@@ -40,9 +42,14 @@ struct ContentView: View {
                     .keyboardType(wholeNumberBPM ? .numberPad : .decimalPad)
                     .font(.system(size: 100, weight: .bold))
                     .multilineTextAlignment(.center)
-                    .foregroundColor(.primary)
+                    .foregroundColor(bpmColor)
                     .minimumScaleFactor(0.3)
                     .lineLimit(1)
+                    .onChange(of: bpmInput) { newValue in
+                        if let bpm = Double(newValue), bpm > 0 {
+                            updateTransitionTipsBPM(with: bpm)
+                        }
+                    }
             }
             .padding()
             .background(Color(UIColor.systemBackground))
@@ -104,7 +111,7 @@ struct ContentView: View {
                     .font(.caption)
                     .padding(.horizontal)
 
-                    Stepper(value: $pitchShift, in: -6...6, step: 0.1) {
+                    Stepper(value: $pitchShift, in: pitchRangeLimits(), step: 0.1) {
                         Text("Adjust Pitch")
                     }
                     .onChange(of: pitchShift) { _ in
@@ -126,16 +133,44 @@ struct ContentView: View {
         .preferredColorScheme(isDarkMode ? .dark : .light)
     }
 
+    private func pitchRangeLimits() -> ClosedRange<Double> {
+        switch pitchRange {
+        case "±10%":
+            return -10...10
+        case "±16%":
+            return -16...16
+        case "WIDE":
+            return -100...100
+        default:  // "±6%" or any undefined case
+            return -6...6
+        }
+    }
+
     private func registerTap() {
         let now = Date()
         tapTimes.append(now)
         print("Tap registered at \(now). Total taps: \(tapTimes.count)")
+
+        updateBPMColor()
 
         if tapTimes.count >= 4 {
             calculateBPM()
         }
 
         isTapping = true
+    }
+
+    private func updateBPMColor() {
+        switch tapTimes.count {
+        case 4...5:
+            bpmColor = .red
+        case 6...7:
+            bpmColor = .orange
+        case 8...:
+            bpmColor = .green
+        default:
+            bpmColor = .white
+        }
     }
 
     private func calculateBPM() {
@@ -150,14 +185,15 @@ struct ContentView: View {
         let bpm = 60.0 / averageInterval
         bpmInput = formattedBPM(bpm)
         print("BPM calculated: \(bpmInput)")
+        updateTransitionTipsBPM(with: bpm)  // Update Transition Tips regardless of locking
     }
 
     private func lockBPM() {
         guard let bpm = Double(bpmInput), bpm > 0 else { return }
         originalBPM = bpm
         bpmLocked = true
+        bpmColor = .white
         updateDisplayedBPM()
-        updateTransitionTipsBPM(with: originalBPM)
         print("BPM locked at: \(originalBPM)")
     }
 
@@ -196,7 +232,7 @@ struct ContentView: View {
     }
 
     private func formattedBPM(_ bpm: Double) -> String {
-        return wholeNumberBPM ? String(Int(round(bpm))) : String(format: "%.1f", bpm)
+        return wholeNumberBPM ? String(Int(round(bpm))) : String(format: "%.2f", bpm)
     }
 
     private func resetBPM() {
@@ -206,6 +242,7 @@ struct ContentView: View {
         pitchShift = 0.0
         tapTimes.removeAll()
         isTapping = false
+        bpmColor = .white
         print("BPM and Pitch Reset")
     }
 }

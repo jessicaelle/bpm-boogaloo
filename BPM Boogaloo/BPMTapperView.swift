@@ -8,6 +8,7 @@ struct BPMTapperView: View {
     @State private var isTapping: Bool = false
     @State private var tapTimes: [Date] = []
     @State private var lastTapTime: Date? = nil
+    @State private var bpmColor: Color = .white
     
     var body: some View {
         HStack(spacing: 20) {
@@ -45,6 +46,7 @@ struct BPMTapperView: View {
 
         if tapTimes.count >= 4 {
             calculateBPM()
+            updateBPMColor()  // Update the color based on tap count
         }
 
         isTapping = true
@@ -62,14 +64,24 @@ struct BPMTapperView: View {
         let bpm = 60.0 / averageInterval
         bpmInput = formattedBPM(bpm)
 
-        // Lock BPM after calculation
-        bpmLocked = true
-        print("BPM calculated and locked: \(bpmInput)")
-
         // Safely remove elements, keeping only the most recent 12 taps
         let maxTapsToKeep = 12
         if tapTimes.count > maxTapsToKeep {
             tapTimes.removeFirst(tapTimes.count - maxTapsToKeep)
+        }
+    }
+
+    private func updateBPMColor() {
+        // Change color based on the number of taps
+        switch tapTimes.count {
+        case 4...5:
+            bpmColor = .red
+        case 6...7:
+            bpmColor = .orange
+        case 8...:
+            bpmColor = .green
+        default:
+            bpmColor = .white
         }
     }
 
@@ -82,6 +94,7 @@ struct BPMTapperView: View {
         tapTimes.removeAll()
         isTapping = false
         bpmLocked = false
+        bpmColor = .white
         lastTapTime = nil
         print("BPM reset. Tap state cleared.")
     }
@@ -91,6 +104,7 @@ struct BPMTapperView: View {
             guard let lastTapTime = lastTapTime else { return }
             if !bpmLocked && Date().timeIntervalSince(lastTapTime) > 2 {
                 bpmLocked = true
+                bpmColor = .white  // Set color back to white on lock
                 print("BPM locked due to inactivity.")
             }
         }

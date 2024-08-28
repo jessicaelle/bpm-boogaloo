@@ -6,7 +6,7 @@ struct TransitionTip: Identifiable {
     let multiplier: Double?
     let range: Bool
     var hidden: Bool = false
-    var calculatedBPM: String = "- BPM" // Add this property to store the calculated BPM
+    var calculatedBPM: String = "- BPM"
 
     init(title: String, multiplier: Double) {
         self.title = title
@@ -25,7 +25,7 @@ struct TransitionTipsView: View {
     @Binding var transitionTips: [TransitionTip]
     @Binding var bpmInput: String
     @Binding var isEditing: Bool
-    @AppStorage("wholeNumberBPM") var wholeNumberBPM: Bool = true // AppStorage for wholeNumberBPM setting
+    @AppStorage("wholeNumberBPM") var wholeNumberBPM: Bool = true
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -57,16 +57,16 @@ struct TransitionTipsView: View {
                                         }
                                     }
                                 }) {
-                                    Image(systemName: transitionTips[index].hidden ? "eye" : "eye.slash")
-                                        .foregroundColor(transitionTips[index].hidden ? .green : .red)
+                                    Image(systemName: transitionTips[index].hidden ? "eye.slash" : "eye")
+                                        .foregroundColor(transitionTips[index].hidden ? .red : .green)
                                 }
                             }
                             
                             TransitionTipRow(
                                 title: transitionTips[index].title,
-                                calculation: transitionTips[index].calculatedBPM, // Use the calculated BPM
+                                calculation: transitionTips[index].calculatedBPM,
                                 isEditing: isEditing,
-                                bpmPlaceholderColor: bpmInput.isEmpty ? .gray : .primary // Apply color change logic
+                                bpmPlaceholderColor: bpmInput.isEmpty ? .gray : .primary
                             )
                         }
                     }
@@ -75,31 +75,33 @@ struct TransitionTipsView: View {
             }
             .listStyle(PlainListStyle())
             .environment(\.editMode, isEditing ? .constant(.active) : .constant(.inactive))
-            .frame(minHeight: CGFloat(transitionTips.count) * 44) // Assuming each row is approximately 44 points high
+            .frame(minHeight: CGFloat(transitionTips.count) * 44)
             .frame(maxHeight: .infinity)
         }
         .padding(.horizontal)
+        .onAppear {
+            // Reorder tips with "Range" at the top
+            transitionTips.sort { $0.title == "Range" || $1.title != "Range" }
+        }
     }
 
-    // Helper methods
     private func formattedBPM(multiplier: Double) -> String {
         guard let bpm = Double(bpmInput), bpm > 0 else { return "- BPM" }
         let calculatedBPM = bpm * multiplier
-        return wholeNumberBPM ? String(Int(round(calculatedBPM))) : String(format: "%.1f", calculatedBPM)
+        return wholeNumberBPM ? String(Int(round(calculatedBPM))) : String(format: "%.2f", calculatedBPM)
     }
     
     private func rangeText() -> String {
         guard let bpm = Double(bpmInput), bpm > 0 else { return "- BPM" }
         let lower = bpm * 0.94
         let upper = bpm * 1.06
-        return wholeNumberBPM ? "~\(Int(round(lower))) to ~\(Int(round(upper))) BPM" : "\(String(format: "%.1f", lower)) to \(String(format: "%.1f", upper)) BPM"
+        return wholeNumberBPM ? "~\(Int(round(lower))) to ~\(Int(round(upper))) BPM" : "\(String(format: "%.2f", lower)) to \(String(format: "%.2f", upper)) BPM"
     }
     
     private func moveTip(from source: IndexSet, to destination: Int) {
         transitionTips.move(fromOffsets: source, toOffset: destination)
     }
-    
-    // Function to update the transition tips' BPM calculations
+
     func updateTransitionTipsBPM(_ newBPM: Double) {
         for i in 0..<transitionTips.count {
             if let multiplier = transitionTips[i].multiplier {
@@ -115,6 +117,7 @@ struct TransitionTipsView_Previews: PreviewProvider {
     static var previews: some View {
         TransitionTipsView(
             transitionTips: .constant([
+                TransitionTip(title: "Range", range: true),
                 TransitionTip(title: "Halftime", multiplier: 0.5),
                 TransitionTip(title: "Doubletime", multiplier: 2.0)
             ]),
