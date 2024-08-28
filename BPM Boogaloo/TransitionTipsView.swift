@@ -30,7 +30,7 @@ struct TransitionTipsView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
-                Text("TRANSITION TIPS")
+                Text("BEAT GUIDE")
                     .font(.headline)
                     .padding(.top, 30)
                 

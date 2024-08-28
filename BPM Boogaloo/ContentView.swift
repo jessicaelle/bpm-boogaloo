@@ -14,7 +14,8 @@ struct ContentView: View {
     @State private var tapTimes: [Date] = []
     @State private var bpmLocked: Bool = false
     @State private var pitchShift: Double = 0.0
-    @State private var bpmColor: Color = .white
+    @State private var bpmColor: Color = .gray
+    @State private var bpmFontSize: CGFloat = 100  // Initialize with a base font size
 
     @State private var transitionTips: [TransitionTip] = [
         TransitionTip(title: "Range", range: true),
@@ -32,23 +33,24 @@ struct ContentView: View {
             }
 
             ZStack(alignment: .center) {
-                if bpmInput.isEmpty && !isTapping {
-                    Text("BPM")
-                        .font(.system(size: 100, weight: .bold))
-                        .foregroundColor(.gray)
-                }
+                Text("BPM")
+                    .font(.system(size: 100, weight: .bold))
+                    .foregroundColor(bpmInput.isEmpty ? bpmColor : .clear)  // Ensure pulsing shows even when tapping
 
                 TextField("", text: $bpmInput)
                     .keyboardType(wholeNumberBPM ? .numberPad : .decimalPad)
-                    .font(.system(size: 100, weight: .bold))
+                    .font(.system(size: bpmFontSize, weight: .bold)) // Fixed font size based on `999.99`
                     .multilineTextAlignment(.center)
-                    .foregroundColor(bpmColor)
-                    .minimumScaleFactor(0.3)
+                    .foregroundColor(bpmInput.isEmpty ? .clear : bpmColor)  // Use bpmColor for pulsing and display
                     .lineLimit(1)
-                    .onChange(of: bpmInput) { newValue in
-                        if let bpm = Double(newValue), bpm > 0 {
-                            updateTransitionTipsBPM(with: bpm)
+                    .background(GeometryReader { geometry in
+                        Color.clear.onAppear {
+                            let availableWidth = geometry.size.width * 0.9  // Adjust according to your layout
+                            calculateFontSizeForBPM(availableWidth: availableWidth)
                         }
+                    })
+                    .onChange(of: bpmInput) { newValue in
+                        handleManualBPMInput(newValue)
                     }
             }
             .padding()
@@ -104,7 +106,6 @@ struct ContentView: View {
             if bpmLocked {
                 VStack {
                     HStack {
-                        Text("Pitch Shift:")
                         Spacer()
                         Text("\(pitchShift, specifier: "%.1f")%")
                     }
@@ -131,6 +132,27 @@ struct ContentView: View {
         }
         .padding()
         .preferredColorScheme(isDarkMode ? .dark : .light)
+        .onAppear {
+            updateBPMColorAfterModeChange()  // Ensure BPM color updates after mode change
+        }
+    }
+
+    private func calculateFontSizeForBPM(availableWidth: CGFloat) {
+        let sampleText = "999.99"
+        let maxFontSize: CGFloat = 100  // The maximum font size
+        let font = UIFont.systemFont(ofSize: maxFontSize, weight: .bold)
+
+        var fontSize = maxFontSize
+        var sampleSize = (sampleText as NSString).size(withAttributes: [.font: font])
+        
+        // Adjust the font size down until the text fits within the available width
+        while sampleSize.width > availableWidth && fontSize > 10 { // 10 is a safe minimum size
+            fontSize -= 1
+            let adjustedFont = UIFont.systemFont(ofSize: fontSize, weight: .bold)
+            sampleSize = (sampleText as NSString).size(withAttributes: [.font: adjustedFont])
+        }
+        
+        bpmFontSize = fontSize
     }
 
     private func pitchRangeLimits() -> ClosedRange<Double> {
@@ -151,7 +173,11 @@ struct ContentView: View {
         tapTimes.append(now)
         print("Tap registered at \(now). Total taps: \(tapTimes.count)")
 
-        updateBPMColor()
+        if tapTimes.count <= 3 {
+            animateBPMColor()  // Pulse the color for the first 3 taps
+        } else {
+            updateBPMColor()  // Change color based on tap count (red/orange/green)
+        }
 
         if tapTimes.count >= 4 {
             calculateBPM()
@@ -160,16 +186,39 @@ struct ContentView: View {
         isTapping = true
     }
 
+    private func animateBPMColor() {
+        let baseColor = isDarkMode ? Color.white : Color.black
+        let pulseColor = baseColor.opacity(0.4)
+
+        withAnimation(.easeInOut(duration: 0.2)) {
+            bpmColor = pulseColor
+        }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {  // Slightly extend the timing for a smoother pulse
+            withAnimation(.easeInOut(duration: 0.2)) {
+                bpmColor = baseColor
+            }
+        }
+    }
+    
+    private func updateBPMColorAfterModeChange() {
+        if bpmLocked {
+            bpmColor = isDarkMode ? .white : .black
+        }
+    }
+
     private func updateBPMColor() {
+        let colorScheme = isDarkMode ? ColorScheme.dark : ColorScheme.light
+
         switch tapTimes.count {
         case 4...5:
-            bpmColor = .red
+            bpmColor = colorScheme == .dark ? .red : .red.opacity(0.8)
         case 6...7:
-            bpmColor = .orange
+            bpmColor = colorScheme == .dark ? .orange : .orange.opacity(0.8)
         case 8...:
-            bpmColor = .green
+            bpmColor = colorScheme == .dark ? .green : .green.opacity(0.8)
         default:
-            bpmColor = .white
+            bpmColor = colorScheme == .dark ? .white : .black
         }
     }
 
@@ -192,10 +241,13 @@ struct ContentView: View {
         guard let bpm = Double(bpmInput), bpm > 0 else { return }
         originalBPM = bpm
         bpmLocked = true
-        bpmColor = .white
+
+        bpmColor = isDarkMode ? .white : .black
+
         updateDisplayedBPM()
         print("BPM locked at: \(originalBPM)")
     }
+
 
     private func updateDisplayedBPM() {
         guard bpmLocked else { return }
@@ -205,6 +257,9 @@ struct ContentView: View {
         bpmInput = formattedBPM(newBPM)
         updateTransitionTipsBPM(with: newBPM)
     }
+
+   
+
 
     private func updateTransitionTipsBPM(with bpm: Double) {
         for i in 0..<transitionTips.count {
@@ -242,8 +297,14 @@ struct ContentView: View {
         pitchShift = 0.0
         tapTimes.removeAll()
         isTapping = false
-        bpmColor = .white
+        bpmColor = .gray
         print("BPM and Pitch Reset")
+    }
+
+    private func handleManualBPMInput(_ newValue: String) {
+        guard let bpm = Double(newValue), bpm > 0 else { return }
+        bpmInput = formattedBPM(bpm)
+        updateTransitionTipsBPM(with: bpm)  // Update Transition Tips with manually entered BPM
     }
 }
 
