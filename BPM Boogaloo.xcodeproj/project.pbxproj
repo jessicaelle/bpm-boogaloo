@@ -18,11 +18,12 @@
 		C85F97C82C7D997900370F82 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C85F97C72C7D997900370F82 /* SettingsView.swift */; };
 		C85F97CC2C7DAA0E00370F82 /* TransitionTipsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C85F97CB2C7DAA0E00370F82 /* TransitionTipsView.swift */; };
 		C85F97CE2C7DADB300370F82 /* BPMTapperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C85F97CD2C7DADB300370F82 /* BPMTapperView.swift */; };
-		C85F97D02C7DB8D500370F82 /* TestSliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C85F97CF2C7DB8D500370F82 /* TestSliderView.swift */; };
 		C85F97D22C7E218A00370F82 /* NavView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C85F97D12C7E218A00370F82 /* NavView.swift */; };
 		C85F97D42C7E27BE00370F82 /* ClockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C85F97D32C7E27BE00370F82 /* ClockView.swift */; };
 		C85F97D62C7E354C00370F82 /* CountdownBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C85F97D52C7E354C00370F82 /* CountdownBannerView.swift */; };
 		C85F97D82C7E4EB800370F82 /* TransitionTipRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C85F97D72C7E4EB800370F82 /* TransitionTipRow.swift */; };
+		C85F97DA2C7E8B3700370F82 /* PitchFader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C85F97D92C7E8B3700370F82 /* PitchFader.swift */; };
+		C85F97DC2C7E8D7400370F82 /* PitchFaderTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C85F97DB2C7E8D7400370F82 /* PitchFaderTestView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,11 +58,12 @@
 		C85F97C72C7D997900370F82 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		C85F97CB2C7DAA0E00370F82 /* TransitionTipsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransitionTipsView.swift; sourceTree = "<group>"; };
 		C85F97CD2C7DADB300370F82 /* BPMTapperView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BPMTapperView.swift; sourceTree = "<group>"; };
-		C85F97CF2C7DB8D500370F82 /* TestSliderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestSliderView.swift; sourceTree = "<group>"; };
 		C85F97D12C7E218A00370F82 /* NavView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavView.swift; sourceTree = "<group>"; };
 		C85F97D32C7E27BE00370F82 /* ClockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClockView.swift; sourceTree = "<group>"; };
 		C85F97D52C7E354C00370F82 /* CountdownBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountdownBannerView.swift; sourceTree = "<group>"; };
 		C85F97D72C7E4EB800370F82 /* TransitionTipRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransitionTipRow.swift; sourceTree = "<group>"; };
+		C85F97D92C7E8B3700370F82 /* PitchFader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PitchFader.swift; sourceTree = "<group>"; };
+		C85F97DB2C7E8D7400370F82 /* PitchFaderTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PitchFaderTestView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -114,13 +116,14 @@
 			children = (
 				C80A0E292C7D40280032CCF1 /* BPM_BoogalooApp.swift */,
 				C80A0E2B2C7D40280032CCF1 /* ContentView.swift */,
+				C85F97DB2C7E8D7400370F82 /* PitchFaderTestView.swift */,
 				C80A0E2D2C7D40290032CCF1 /* Assets.xcassets */,
 				C80A0E2F2C7D40290032CCF1 /* Preview Content */,
 				C80A0E532C7D4E6E0032CCF1 /* NumberPadView.swift */,
 				C85F97C72C7D997900370F82 /* SettingsView.swift */,
+				C85F97D92C7E8B3700370F82 /* PitchFader.swift */,
 				C85F97CB2C7DAA0E00370F82 /* TransitionTipsView.swift */,
 				C85F97CD2C7DADB300370F82 /* BPMTapperView.swift */,
-				C85F97CF2C7DB8D500370F82 /* TestSliderView.swift */,
 				C85F97D12C7E218A00370F82 /* NavView.swift */,
 				C85F97D32C7E27BE00370F82 /* ClockView.swift */,
 				C85F97D52C7E354C00370F82 /* CountdownBannerView.swift */,
@@ -284,13 +287,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C85F97DC2C7E8D7400370F82 /* PitchFaderTestView.swift in Sources */,
 				C85F97D42C7E27BE00370F82 /* ClockView.swift in Sources */,
 				C80A0E2C2C7D40280032CCF1 /* ContentView.swift in Sources */,
 				C85F97C82C7D997900370F82 /* SettingsView.swift in Sources */,
 				C85F97CE2C7DADB300370F82 /* BPMTapperView.swift in Sources */,
 				C85F97D82C7E4EB800370F82 /* TransitionTipRow.swift in Sources */,
+				C85F97DA2C7E8B3700370F82 /* PitchFader.swift in Sources */,
 				C85F97CC2C7DAA0E00370F82 /* TransitionTipsView.swift in Sources */,
-				C85F97D02C7DB8D500370F82 /* TestSliderView.swift in Sources */,
 				C85F97D62C7E354C00370F82 /* CountdownBannerView.swift in Sources */,
 				C85F97D22C7E218A00370F82 /* NavView.swift in Sources */,
 				C80A0E542C7D4E6E0032CCF1 /* NumberPadView.swift in Sources */,

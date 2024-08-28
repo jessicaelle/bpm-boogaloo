@@ -32,47 +32,40 @@ struct ContentView: View {
                 CountdownBannerView(countdownTime: $countdownTime)
             }
 
-            HStack {
-                if sliderPosition == "Left" {
-                    pitchSlider
-                }
-
-                ZStack(alignment: .center) {
-                    if bpmInput.isEmpty && !isTapping {
-                        Text("BPM")
-                            .font(.system(size: 100, weight: .bold))
-                            .foregroundColor(.gray)
-                    }
-
-                    TextField("", text: $bpmInput)
-                        .keyboardType(wholeNumberBPM ? .numberPad : .decimalPad) // Allow decimals if wholeNumberBPM is false
+            ZStack(alignment: .center) {
+                if bpmInput.isEmpty && !isTapping {
+                    Text("BPM")
                         .font(.system(size: 100, weight: .bold))
-                        .multilineTextAlignment(.center)
-                        .foregroundColor(.primary)
-                        .minimumScaleFactor(0.3)  // Added to resize the font automatically
-                        .lineLimit(1)             // Ensure it stays on one line
-                        .onChange(of: bpmInput) { oldValue, newValue in
-                            if newValue.count > 5 {
-                                bpmInput = String(newValue.prefix(5))
-                            }
-                            if !newValue.isEmpty {
-                                isTapping = false
-                                bpmLocked = false
-                                tapTimes.removeAll()
-                                print("BPM input manually set: \(newValue)")
-                            }
+                        .foregroundColor(.gray)
+                }
+
+                TextField("", text: $bpmInput)
+                    .keyboardType(wholeNumberBPM ? .numberPad : .decimalPad) // Allow decimals if wholeNumberBPM is false
+                    .font(.system(size: 100, weight: .bold))
+                    .multilineTextAlignment(.center)
+                    .foregroundColor(.primary)
+                    .minimumScaleFactor(0.3)  // Added to resize the font automatically
+                    .lineLimit(1)             // Ensure it stays on one line
+                    .onChange(of: bpmInput) { oldValue, newValue in
+                        if newValue.count > 5 {
+                            bpmInput = String(newValue.prefix(5))
                         }
-                }
-                .padding()
-                .background(Color(UIColor.systemBackground))
-                .cornerRadius(10)
-                .padding(.horizontal)
-
-                if sliderPosition == "Right" {
-                    pitchSlider
-                }
+                        if !newValue.isEmpty {
+                            isTapping = false
+                            bpmLocked = false
+                            tapTimes.removeAll()
+                            print("BPM input manually set: \(newValue)")
+                        }
+                    }
             }
+            .padding()
+            .background(Color(UIColor.systemBackground))
+            .cornerRadius(10)
+            .padding(.horizontal)
 
+            // Add the horizontal pitch fader below the BPM display
+            PitchFader(pitchShift: $pitchShift)
+            
             BPMTapperView(bpmInput: $bpmInput, bpmLocked: $bpmLocked)
 
             // Transition Tips Section
@@ -89,33 +82,6 @@ struct ContentView: View {
         .preferredColorScheme(isDarkMode ? .dark : .light)
         .onAppear {
             setupTapDetection()
-        }
-    }
-
-    private var pitchSlider: some View {
-        VStack {
-            Text("Pitch")
-                .font(.caption)
-                .foregroundColor(.gray)
-            Slider(value: $pitchShift, in: -6...6, step: 0.1, onEditingChanged: { editing in
-                if !editing && bpmInput.isEmpty {
-                    withAnimation {
-                        flashBPMPlaceholder()
-                    }
-                } else if !editing {
-                    updateBPMWithPitchShift()
-                }
-            })
-            .rotationEffect(.degrees(-90))
-            .frame(height: 200)
-            .padding(.horizontal)
-            .background(Color(UIColor.systemGray6))
-            .cornerRadius(10)
-            .padding(.horizontal)
-            .frame(width: 50)
-            Text("\(pitchShift, specifier: "%.1f")%")
-                .font(.caption)
-                .foregroundColor(.gray)
         }
     }
 
