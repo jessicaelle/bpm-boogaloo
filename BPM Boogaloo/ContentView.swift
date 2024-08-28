@@ -2,20 +2,18 @@ import SwiftUI
 
 struct ContentView: View {
     @Binding var showSettings: Bool
-    @Binding var countdownTime: TimeInterval? // Binding for the countdown time
+    @Binding var countdownTime: TimeInterval?
     @AppStorage("isDarkMode") var isDarkMode: Bool = true
     @AppStorage("sliderPosition") var sliderPosition: String = "Right"
-    @AppStorage("wholeNumberBPM") var wholeNumberBPM: Bool = true // AppStorage for wholeNumberBPM setting
+    @AppStorage("wholeNumberBPM") var wholeNumberBPM: Bool = true
+
     @State private var bpmInput: String = ""
+    @State private var originalBPM: Double = 0.0
     @State private var isTapping: Bool = false
     @State private var tapTimes: [Date] = []
-    @State private var lastTapTime: Date? = nil
     @State private var bpmLocked: Bool = false
-    @State private var pitchShift: Double = 0 {
-        didSet {
-            updateBPMWithPitchShift()
-        }
-    }
+    @State private var pitchShift: Double = 0.0
+
     @State private var transitionTips: [TransitionTip] = [
         TransitionTip(title: "Halftime", multiplier: 0.5),
         TransitionTip(title: "Doubletime", multiplier: 2.0),
@@ -27,7 +25,6 @@ struct ContentView: View {
 
     var body: some View {
         VStack(spacing: 20) {
-            // Add the CountdownBannerView, but only show it if the countdown time is set
             if countdownTime != nil {
                 CountdownBannerView(countdownTime: $countdownTime)
             }
@@ -40,104 +37,98 @@ struct ContentView: View {
                 }
 
                 TextField("", text: $bpmInput)
-                    .keyboardType(wholeNumberBPM ? .numberPad : .decimalPad) // Allow decimals if wholeNumberBPM is false
+                    .keyboardType(wholeNumberBPM ? .numberPad : .decimalPad)
                     .font(.system(size: 100, weight: .bold))
                     .multilineTextAlignment(.center)
                     .foregroundColor(.primary)
-                    .minimumScaleFactor(0.3)  // Added to resize the font automatically
-                    .lineLimit(1)             // Ensure it stays on one line
-                    .onChange(of: bpmInput) { oldValue, newValue in
-                        if newValue.count > 5 {
-                            bpmInput = String(newValue.prefix(5))
-                        }
-                        if !newValue.isEmpty {
-                            isTapping = false
-                            bpmLocked = false
-                            tapTimes.removeAll()
-                            print("BPM input manually set: \(newValue)")
-                        }
-                    }
+                    .minimumScaleFactor(0.3)
+                    .lineLimit(1)
             }
             .padding()
             .background(Color(UIColor.systemBackground))
             .cornerRadius(10)
             .padding(.horizontal)
 
-            // Add the horizontal pitch fader below the BPM display
-            PitchFader(pitchShift: $pitchShift)
-            
-            BPMTapperView(bpmInput: $bpmInput, bpmLocked: $bpmLocked)
+            HStack {
+                if !bpmLocked {
+                    Button(action: {
+                        registerTap()
+                    }) {
+                        Text("TAP")
+                            .font(.title2)
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
+                    }
+                }
 
-            // Transition Tips Section
+                if !bpmLocked {
+                    Button(action: {
+                        lockBPM()
+                    }) {
+                        Text("LOCK")
+                            .font(.title2)
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(Color.red)
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
+                    }
+                }
+
+                if bpmLocked {
+                    Button(action: {
+                        resetBPM()
+                    }) {
+                        Text("RESET")
+                            .font(.title2)
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(Color.red)
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
+                    }
+                }
+            }
+            .padding(.horizontal)
+
+            if bpmLocked {
+                VStack {
+                    HStack {
+                        Text("Pitch Shift:")
+                        Spacer()
+                        Text("\(pitchShift, specifier: "%.1f")%")
+                    }
+                    .font(.caption)
+                    .padding(.horizontal)
+
+                    Stepper(value: $pitchShift, in: -6...6, step: 0.1) {
+                        Text("Adjust Pitch")
+                    }
+                    .onChange(of: pitchShift) { _ in
+                        updateDisplayedBPM()
+                    }
+                }
+            }
+
             TransitionTipsView(
                 transitionTips: $transitionTips,
                 bpmInput: $bpmInput,
                 isEditing: $isEditing,
-                wholeNumberBPM: wholeNumberBPM // Pass the actual Bool value, not a binding
+                wholeNumberBPM: wholeNumberBPM
             )
 
             Spacer()
         }
         .padding()
         .preferredColorScheme(isDarkMode ? .dark : .light)
-        .onAppear {
-            setupTapDetection()
-        }
     }
-
-    private func flashBPMPlaceholder() {
-        withAnimation(Animation.easeInOut(duration: 0.3).repeatCount(3, autoreverses: true)) {
-            bpmInput = "BPM"
-        }
-        bpmInput = ""
-    }
-
-    private func updateBPMWithPitchShift() {
-        guard let originalBPM = Double(bpmInput) else { return }
-        let newBPM = originalBPM * (1 + pitchShift / 100)
-        bpmInput = formattedBPM(newBPM)
-        print("BPM updated with pitch shift: \(bpmInput)")
-    }
-
-    private func calculatedBPM(multiplier: Double) -> String {
-        if let bpm = Double(bpmInput), bpm > 0 {
-            return formattedBPM(bpm * multiplier)
-        }
-        return "0"
-    }
-
-    private func rangeText() -> String {
-        if let bpm = Double(bpmInput), bpm > 0 {
-            let lower = bpm * 0.94
-            let upper = bpm * 1.06
-
-            if wholeNumberBPM {
-                // Use tildes for approximate values when whole number BPMs are on
-                return "~\(formattedBPM(lower)) to ~\(formattedBPM(upper)) BPM"
-            } else {
-                // Exact values without tildes when whole number BPMs are off
-                return "\(formattedBPM(lower)) to \(formattedBPM(upper)) BPM"
-            }
-        }
-
-        // Default case when there's no BPM established
-        return "0 to 0 BPM"
-    }
-
-    private func formattedBPM(_ bpm: Double) -> String {
-        return wholeNumberBPM ? String(Int(round(bpm))) : String(format: "%.1f", bpm)
-    }
-
 
     private func registerTap() {
-        guard !bpmLocked else {
-            print("Tap ignored: BPM is locked.")
-            return
-        }
-
         let now = Date()
         tapTimes.append(now)
-        lastTapTime = now
         print("Tap registered at \(now). Total taps: \(tapTimes.count)")
 
         if tapTimes.count >= 4 {
@@ -158,39 +149,64 @@ struct ContentView: View {
 
         let bpm = 60.0 / averageInterval
         bpmInput = formattedBPM(bpm)
-        bpmLocked = false
         print("BPM calculated: \(bpmInput)")
-
-        if tapTimes.count > 4 {
-            tapTimes.removeFirst(tapTimes.count - 12)
-        }
     }
 
-    private func resetBPM() {
-        bpmInput = ""
-        tapTimes.removeAll()
-        isTapping = false
-        bpmLocked = false
-        lastTapTime = nil
-        print("BPM reset. Tap state cleared.")
+    private func lockBPM() {
+        guard let bpm = Double(bpmInput), bpm > 0 else { return }
+        originalBPM = bpm
+        bpmLocked = true
+        updateDisplayedBPM()
+        updateTransitionTipsBPM(with: originalBPM)
+        print("BPM locked at: \(originalBPM)")
     }
 
-    private func setupTapDetection() {
-        Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
-            guard let lastTapTime = lastTapTime else { return }
-            if !bpmLocked && Date().timeIntervalSince(lastTapTime) > 2 {
-                bpmLocked = true
-                print("BPM locked due to inactivity.")
+    private func updateDisplayedBPM() {
+        guard bpmLocked else { return }
+
+        let newBPM = originalBPM * (1 + (pitchShift / 100))
+        print("Pitch Shift: \(pitchShift), Display BPM: \(newBPM)")
+        bpmInput = formattedBPM(newBPM)
+        updateTransitionTipsBPM(with: newBPM)
+    }
+
+    private func updateTransitionTipsBPM(with bpm: Double) {
+        for i in 0..<transitionTips.count {
+            if let multiplier = transitionTips[i].multiplier {
+                let calculatedBPM = formattedBPM(bpm * multiplier)
+                print("Updating \(transitionTips[i].title) to \(calculatedBPM)")
+                transitionTips[i].calculatedBPM = calculatedBPM
+            } else if transitionTips[i].range {
+                let rangeTextValue = rangeText(bpm: bpm)
+                print("Updating \(transitionTips[i].title) to range \(rangeTextValue)")
+                transitionTips[i].calculatedBPM = rangeTextValue
             }
         }
     }
 
-    private func moveTip(from source: IndexSet, to destination: Int) {
-        transitionTips.move(fromOffsets: source, toOffset: destination)
+    private func rangeText(bpm: Double) -> String {
+        let lower = bpm * 0.94
+        let upper = bpm * 1.06
+
+        if wholeNumberBPM {
+            return "~\(formattedBPM(lower)) to ~\(formattedBPM(upper)) BPM"
+        } else {
+            return "\(formattedBPM(lower)) to \(formattedBPM(upper)) BPM"
+        }
     }
 
-    private func deleteTip(at offsets: IndexSet) {
-        transitionTips.remove(atOffsets: offsets)
+    private func formattedBPM(_ bpm: Double) -> String {
+        return wholeNumberBPM ? String(Int(round(bpm))) : String(format: "%.1f", bpm)
+    }
+
+    private func resetBPM() {
+        bpmInput = ""
+        originalBPM = 0.0
+        bpmLocked = false
+        pitchShift = 0.0
+        tapTimes.removeAll()
+        isTapping = false
+        print("BPM and Pitch Reset")
     }
 }
 

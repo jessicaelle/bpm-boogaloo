@@ -3,7 +3,7 @@ import SwiftUI
 struct BPMTapperView: View {
     @Binding var bpmInput: String
     @Binding var bpmLocked: Bool
-    @AppStorage("wholeNumberBPM") var wholeNumberBPM: Bool = true // AppStorage for wholeNumberBPM setting
+    @AppStorage("wholeNumberBPM") var wholeNumberBPM: Bool = true
     
     @State private var isTapping: Bool = false
     @State private var tapTimes: [Date] = []
@@ -61,8 +61,10 @@ struct BPMTapperView: View {
 
         let bpm = 60.0 / averageInterval
         bpmInput = formattedBPM(bpm)
-        bpmLocked = false // Keep the BPM unlocked to continue rolling average
-        print("BPM calculated: \(bpmInput)")
+
+        // Lock BPM after calculation
+        bpmLocked = true
+        print("BPM calculated and locked: \(bpmInput)")
 
         // Safely remove elements, keeping only the most recent 12 taps
         let maxTapsToKeep = 12

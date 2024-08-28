@@ -6,6 +6,7 @@ struct TransitionTip: Identifiable {
     let multiplier: Double?
     let range: Bool
     var hidden: Bool = false
+    var calculatedBPM: String = "- BPM" // Add this property to store the calculated BPM
 
     init(title: String, multiplier: Double) {
         self.title = title
@@ -63,7 +64,7 @@ struct TransitionTipsView: View {
                             
                             TransitionTipRow(
                                 title: transitionTips[index].title,
-                                calculation: bpmInput.isEmpty ? "- BPM" : (transitionTips[index].range ? rangeText() : "\(formattedBPM(multiplier: transitionTips[index].multiplier ?? 1.0)) BPM"),
+                                calculation: transitionTips[index].calculatedBPM, // Use the calculated BPM
                                 isEditing: isEditing,
                                 bpmPlaceholderColor: bpmInput.isEmpty ? .gray : .primary // Apply color change logic
                             )
@@ -96,6 +97,17 @@ struct TransitionTipsView: View {
     
     private func moveTip(from source: IndexSet, to destination: Int) {
         transitionTips.move(fromOffsets: source, toOffset: destination)
+    }
+    
+    // Function to update the transition tips' BPM calculations
+    func updateTransitionTipsBPM(_ newBPM: Double) {
+        for i in 0..<transitionTips.count {
+            if let multiplier = transitionTips[i].multiplier {
+                transitionTips[i].calculatedBPM = formattedBPM(multiplier: multiplier)
+            } else if transitionTips[i].range {
+                transitionTips[i].calculatedBPM = rangeText()
+            }
+        }
     }
 }
 
