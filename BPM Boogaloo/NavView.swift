@@ -6,19 +6,16 @@ internal struct NavView: View {
 
     internal var body: some View {
         TabView {
-            // ContentView Tab
             ContentView(showSettings: $showSettings, countdownTime: $countdownTime)
                 .tabItem {
                     Label("BPM", systemImage: "metronome")
                 }
             
-            // ClockView Tab
             ClockView(countdownTime: $countdownTime)
                 .tabItem {
                     Label("Clock", systemImage: "clock")
                 }
 
-            // SettingsView Tab
             SettingsView()
                 .tabItem {
                     Label("Settings", systemImage: "gearshape")

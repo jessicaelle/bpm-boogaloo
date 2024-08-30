@@ -2,7 +2,7 @@ import SwiftUI
 
 internal struct PitchAdjustmentView: View {
     @Binding internal var pitchShift: Double
-    @Binding internal var originalBPM: Double  // Preserve the original BPM for adjustments
+    @Binding internal var originalBPM: Double
     @Binding internal var bpmInput: String
     internal var bpmLocked: Bool
     internal var pitchRangeLimits: ClosedRange<Double>

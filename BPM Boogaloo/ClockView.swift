@@ -3,9 +3,9 @@ import SwiftUI
 internal struct ClockView: View {
     @AppStorage("isDarkMode") internal var isDarkMode: Bool = true
     @Binding internal var countdownTime: TimeInterval?
-    @State private var selectedTime: Date = Date()  // Non-optional Date for time picker
-    @State private var isCountdownStarted = false
-    @State private var isShowingTimePicker = false
+    @State private var selectedTime: Date = Date()
+    @State private var isCountdownStarted: Bool = false
+    @State private var isShowingTimePicker: Bool = false
     @State private var timer: Timer? = nil
 
     // Constants

@@ -4,7 +4,7 @@ internal struct TransitionTipRow: View {
     internal let title: String
     internal let calculation: String
     internal let isEditing: Bool
-    internal let bpmPlaceholderColor: Color // Color for the BPM label
+    internal let bpmPlaceholderColor: Color
 
     internal var body: some View {
         HStack {

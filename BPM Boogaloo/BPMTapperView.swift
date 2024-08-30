@@ -17,8 +17,8 @@ internal struct BPMTapperView: View {
     private let flashDelay: TimeInterval = 0.08  // Minimal delay between flashes
 
     // Other constants
-    private let minTapsForBPMCalculation = 4
-    private let maxTapsToKeep = 12
+    private let minTapsForBPMCalculation: Int = 4
+    private let maxTapsToKeep: Int = 12
     private let tapInactivityThreshold: TimeInterval = 2.0
     private let tapDetectionInterval: TimeInterval = 0.1
     private let buttonSpacing: CGFloat = 20

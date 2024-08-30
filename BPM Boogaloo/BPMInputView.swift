@@ -10,7 +10,7 @@ internal struct BPMInputView: View {
     // Constants
     private let baseFontSize: CGFloat = 100
     private let paddingValue: CGFloat = 16
-    private let sampleText = "999.99"
+    private let sampleText: String = "999.99"
     private let minFontSize: CGFloat = 10
 
     internal var body: some View {

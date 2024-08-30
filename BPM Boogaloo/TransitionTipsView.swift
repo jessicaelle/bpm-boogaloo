@@ -1,7 +1,7 @@
 import SwiftUI
 
 internal struct TransitionTip: Identifiable {
-    internal let id = UUID()
+    internal let id: UUID = UUID()
     internal let title: String
     internal let multiplier: Double?
     internal let range: Bool

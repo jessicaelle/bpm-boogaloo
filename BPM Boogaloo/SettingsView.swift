@@ -5,10 +5,9 @@ internal struct SettingsView: View {
     @AppStorage("wholeNumberBPM") internal var wholeNumberBPM: Bool = true
     @AppStorage("orangeAlertMinutes") internal var orangeAlertMinutes: Double = 10
     @AppStorage("redAlertMinutes") internal var redAlertMinutes: Double = 5
-    @AppStorage("pitchRange") internal var pitchRange: String = "±6%"  // Default pitch range
+    @AppStorage("pitchRange") internal var pitchRange: String = "±6%"
 
-    // Internal array of pitch ranges
-    private let pitchRanges = ["±6%", "±10%", "±16%", "WIDE"]
+    internal let pitchRanges: [String] = ["±6%", "±10%", "±16%", "WIDE"]
 
     internal var body: some View {
         NavigationView {

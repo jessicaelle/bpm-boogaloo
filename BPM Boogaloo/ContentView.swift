@@ -8,21 +8,22 @@ internal struct ContentView: View {
     @AppStorage("wholeNumberBPM") internal var wholeNumberBPM: Bool = true
     @AppStorage("pitchRange") internal var pitchRange: String = "±6%"
 
-    @State private var bpmInput: String = ""
-    @State private var originalBPM: Double = 0.0
-    @State private var bpmLocked: Bool = false
-    @State private var pitchShift: Double = 0.0
-    @State private var bpmColor: Color = .gray
-    @State private var bpmFontSize: CGFloat = 100
-
-    @State private var transitionTips: [TransitionTip] = [
+    @State internal var bpmInput: String = ""
+    @State internal var originalBPM: Double = 0.0
+    @State internal var isTapping: Bool = false
+    @State internal var tapTimes: [Date] = []
+    @State internal var bpmLocked: Bool = false
+    @State internal var pitchShift: Double = 0.0
+    @State internal var bpmColor: Color = .gray
+    @State internal var bpmFontSize: CGFloat = 100
+    @State internal var transitionTips: [TransitionTip] = [
         TransitionTip(title: "Range", range: true),
         TransitionTip(title: "Halftime", multiplier: 0.5),
         TransitionTip(title: "Doubletime", multiplier: 2.0),
         TransitionTip(title: "¾ Loop Up", multiplier: 4/3),
         TransitionTip(title: "¾ Loop Down", multiplier: 3/4)
     ]
-    @State private var isEditing: Bool = false
+    @State internal var isEditing: Bool = false
 
     internal var body: some View {
         VStack(spacing: 20) {
