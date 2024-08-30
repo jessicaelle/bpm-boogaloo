@@ -70,7 +70,7 @@ internal struct BPMTapperView: View {
             return
         }
 
-        let now = Date()
+        let now: Date = Date()
         tapTimes.append(now)
         lastTapTime = now
 
@@ -87,9 +87,9 @@ internal struct BPMTapperView: View {
     private func calculateBPM() {
         guard tapTimes.count >= minTapsForBPMCalculation else { return }
 
-        let intervals = zip(tapTimes.dropLast(), tapTimes.dropFirst()).map { $1.timeIntervalSince($0) }
-        let averageInterval = intervals.reduce(0, +) / Double(intervals.count)
-        let bpm = 60.0 / averageInterval
+        let intervals: [TimeInterval] = zip(tapTimes.dropLast(), tapTimes.dropFirst()).map { $1.timeIntervalSince($0) }
+        let averageInterval: TimeInterval = intervals.reduce(0, +) / Double(intervals.count)
+        let bpm: Double = 60.0 / averageInterval
         bpmInput = formattedBPM(bpm)
         originalBPM = bpm
 
@@ -99,8 +99,8 @@ internal struct BPMTapperView: View {
     }
 
     private func flashPlaceholder() {
-        let baseColor = isDarkMode ? Color.white : Color.black
-        let pulseColor = baseColor.opacity(0.4)
+        let baseColor: Color = isDarkMode ? Color.white : Color.black
+        let pulseColor: Color = baseColor.opacity(0.4)
 
         withAnimation(.easeInOut(duration: flashAnimationDuration)) {
             bpmColor = pulseColor

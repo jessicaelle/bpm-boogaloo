@@ -27,7 +27,7 @@ internal struct BPMInputView: View {
                 .lineLimit(1)
                 .background(GeometryReader { geometry in
                     Color.clear.onAppear {
-                        let availableWidth = geometry.size.width * 0.9
+                        let availableWidth: CGFloat = geometry.size.width * 0.9
                         calculateFontSizeForBPM(availableWidth: availableWidth)
                     }
                 })
@@ -39,13 +39,13 @@ internal struct BPMInputView: View {
 
     // Private utility method
     private func calculateFontSizeForBPM(availableWidth: CGFloat) {
-        let font = UIFont.systemFont(ofSize: baseFontSize, weight: .bold)
-        var fontSize = baseFontSize
-        var sampleSize = (sampleText as NSString).size(withAttributes: [.font: font])
+        let font: UIFont = UIFont.systemFont(ofSize: baseFontSize, weight: .bold)
+        var fontSize: CGFloat = baseFontSize
+        var sampleSize: CGSize = (sampleText as NSString).size(withAttributes: [.font: font])
 
         while sampleSize.width > availableWidth && fontSize > minFontSize {
             fontSize -= 1
-            let adjustedFont = UIFont.systemFont(ofSize: fontSize, weight: .bold)
+            let adjustedFont: UIFont = UIFont.systemFont(ofSize: fontSize, weight: .bold)
             sampleSize = (sampleText as NSString).size(withAttributes: [.font: adjustedFont])
         }
 
@@ -54,7 +54,7 @@ internal struct BPMInputView: View {
 }
 
 internal struct BPMInputView_Previews: PreviewProvider {
-    @State static var bpmInput = "120"
+    @State static var bpmInput: String = "120"
     @State static var bpmFontSize: CGFloat = 100
     @State static var bpmColor: Color = .gray
 

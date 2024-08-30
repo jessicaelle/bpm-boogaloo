@@ -102,14 +102,14 @@ internal struct ClockView: View {
             }
             .padding()
         }
-        .preferredColorScheme(isDarkMode ? .dark : .light)  // Apply dark mode setting
+        .preferredColorScheme(isDarkMode ? .dark : .light)
     }
 
     // Private utility methods
     private func timeString(from interval: TimeInterval) -> String {
-        let hours = Int(interval) / secondsPerHour
-        let minutes = (Int(interval) % secondsPerHour) / secondsPerMinute
-        let seconds = Int(interval) % secondsPerMinute
+        let hours: Int = Int(interval) / secondsPerHour
+        let minutes: Int = (Int(interval) % secondsPerHour) / secondsPerMinute
+        let seconds: Int = Int(interval) % secondsPerMinute
         return String(format: "%02d:%02d:%02d", hours, minutes, seconds)
     }
 
@@ -122,10 +122,10 @@ internal struct ClockView: View {
     }
 
     private func startCountdown() {
-        let now = Date()
-        let calendar = Calendar.current
-        let components = calendar.dateComponents([.hour, .minute], from: selectedTime)
-        let targetTime = calendar.nextDate(after: now, matching: components, matchingPolicy: .nextTime)!
+        let now: Date = Date()
+        let calendar: Calendar = Calendar.current
+        let components: DateComponents = calendar.dateComponents([.hour, .minute], from: selectedTime)
+        let targetTime: Date = calendar.nextDate(after: now, matching: components, matchingPolicy: .nextTime)!
         countdownTime = targetTime.timeIntervalSince(now)
         isCountdownStarted = true
         isShowingTimePicker = false

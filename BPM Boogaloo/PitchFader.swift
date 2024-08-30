@@ -43,7 +43,7 @@ internal struct PitchAdjustmentView: View {
     private func updateDisplayedBPM() {
         guard bpmLocked else { return }
 
-        let adjustedBPM = originalBPM * (1 + (pitchShift / 100))
+        let adjustedBPM: Double = originalBPM * (1 + (pitchShift / 100))
         bpmInput = formattedBPM(adjustedBPM)
     }
 

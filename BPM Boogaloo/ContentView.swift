@@ -90,10 +90,10 @@ internal struct ContentView: View {
     }
 
     private func updateTransitionTipsBPM() {
-        let bpm = Double(bpmInput) ?? originalBPM
+        let bpm: Double = Double(bpmInput) ?? originalBPM
         for i in 0..<transitionTips.count {
             if let multiplier = transitionTips[i].multiplier {
-                let calculatedBPM = formattedBPM(bpm * multiplier)
+                let calculatedBPM: String = formattedBPM(bpm * multiplier)
                 transitionTips[i].calculatedBPM = calculatedBPM
             } else if transitionTips[i].range {
                 transitionTips[i].calculatedBPM = rangeText(bpm: bpm)
@@ -102,8 +102,8 @@ internal struct ContentView: View {
     }
 
     private func rangeText(bpm: Double) -> String {
-        let lower = bpm * 0.94
-        let upper = bpm * 1.06
+        let lower: Double = bpm * 0.94
+        let upper: Double = bpm * 1.06
         return wholeNumberBPM ? "~\(formattedBPM(lower)) to ~\(formattedBPM(upper)) BPM" : "\(formattedBPM(lower)) to \(formattedBPM(upper)) BPM"
     }
 
@@ -112,7 +112,7 @@ internal struct ContentView: View {
     }
 
     private func handleManualBPMInput(_ newValue: String) {
-        guard let bpm = Double(newValue), bpm > 0 else { return }
+        guard let bpm: Double = Double(newValue), bpm > 0 else { return }
         bpmInput = formattedBPM(bpm)
         originalBPM = bpm  // Update the original BPM as well
         updateTransitionTipsBPM()
@@ -125,7 +125,7 @@ internal struct ContentView: View {
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
+internal struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView(showSettings: .constant(false), countdownTime: .constant(nil))
     }

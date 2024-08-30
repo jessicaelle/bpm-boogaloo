@@ -30,14 +30,14 @@ internal struct CountdownBannerView: View {
 
     // Private utility methods
     private func timeString(from interval: TimeInterval) -> String {
-        let hours = Int(interval) / 3600
-        let minutes = (Int(interval) % 3600) / 60
-        let seconds = Int(interval) % 60
+        let hours: Int = Int(interval) / 3600
+        let minutes: Int = (Int(interval) % 3600) / 60
+        let seconds: Int = Int(interval) % 60
         return String(format: "%02d:%02d:%02d", hours, minutes, seconds)
     }
 
     private func colorForTimeRemaining(_ timeRemaining: TimeInterval) -> Color {
-        let minutesRemaining = timeRemaining / 60
+        let minutesRemaining: Double = timeRemaining / 60
 
         if minutesRemaining > greenThreshold / 60 {
             return .green

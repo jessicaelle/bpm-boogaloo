@@ -95,15 +95,15 @@ internal struct TransitionTipsView: View {
 
     // Private utility methods
     private func formattedBPM(multiplier: Double) -> String {
-        guard let bpm = Double(bpmInput), bpm > 0 else { return "- BPM" }
-        let calculatedBPM = bpm * multiplier
+        guard let bpm: Double = Double(bpmInput), bpm > 0 else { return "- BPM" }
+        let calculatedBPM: Double = bpm * multiplier
         return wholeNumberBPM ? String(Int(round(calculatedBPM))) : String(format: "%.2f", calculatedBPM)
     }
     
     private func rangeText() -> String {
-        guard let bpm = Double(bpmInput), bpm > 0 else { return "- BPM" }
-        let lower = bpm * bpmMultiplierLower
-        let upper = bpm * bpmMultiplierUpper
+        guard let bpm: Double = Double(bpmInput), bpm > 0 else { return "- BPM" }
+        let lower: Double = bpm * bpmMultiplierLower
+        let upper: Double = bpm * bpmMultiplierUpper
         return wholeNumberBPM ? "~\(Int(round(lower))) to ~\(Int(round(upper))) BPM" : "\(String(format: "%.2f", lower)) to \(String(format: "%.2f", upper)) BPM"
     }
     
@@ -113,10 +113,12 @@ internal struct TransitionTipsView: View {
 
     internal func updateTransitionTipsBPM(_ newBPM: Double) {
         for i in 0..<transitionTips.count {
-            if let multiplier = transitionTips[i].multiplier {
-                transitionTips[i].calculatedBPM = formattedBPM(multiplier: multiplier)
+            if let multiplier: Double = transitionTips[i].multiplier {
+                let calculatedBPM: String = formattedBPM(multiplier: multiplier)
+                transitionTips[i].calculatedBPM = calculatedBPM
             } else if transitionTips[i].range {
-                transitionTips[i].calculatedBPM = rangeText()
+                let rangeTextValue: String = rangeText()
+                transitionTips[i].calculatedBPM = rangeTextValue
             }
         }
     }
