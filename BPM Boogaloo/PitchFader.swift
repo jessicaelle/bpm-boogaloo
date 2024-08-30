@@ -1,24 +1,69 @@
 import SwiftUI
 
-struct PitchStepper: View {
+struct PitchAdjustmentView: View {
     @Binding var pitchShift: Double
+    @Binding var originalBPM: Double  // Preserve the original BPM for adjustments
+    @Binding var bpmInput: String
+    var bpmLocked: Bool
+    var pitchRangeLimits: ClosedRange<Double>
+    var onPitchChange: () -> Void
+
+    // Constants
+    private let captionFontSize: CGFloat = 12
+    private let horizontalPadding: CGFloat = 40
+    private let generalPadding: CGFloat = 16
+    private let captionColor: Color = .orange
+    private let stepValue: Double = 0.1
 
     var body: some View {
-        VStack {
-            Stepper(value: $pitchShift, in: -6...6, step: 0.1) {
-                Text("Pitch Shift: \(pitchShift, specifier: "%.1f")%")
-                    .font(.caption)
-                    .foregroundColor(.orange)
-            }
-            .padding(.horizontal, 40)
+        if bpmLocked {
+            VStack {
+                HStack {
+                    Spacer()
+                    Text("Pitch Shift: \(pitchShift, specifier: "%.1f")%")
+                        .font(.system(size: captionFontSize))
+                        .foregroundColor(captionColor)
+                }
+                .padding(.horizontal)
 
+                Stepper(value: $pitchShift, in: pitchRangeLimits, step: stepValue) {
+                    Text("Adjust Pitch")
+                }
+                .padding(.horizontal, horizontalPadding)
+                .onChange(of: pitchShift) { _ in
+                    updateDisplayedBPM()
+                    onPitchChange()
+                }
+            }
+            .padding(generalPadding)
         }
-        .padding()
+    }
+
+    private func updateDisplayedBPM() {
+        guard bpmLocked else { return }
+
+        let adjustedBPM = originalBPM * (1 + (pitchShift / 100))
+        bpmInput = formattedBPM(adjustedBPM)
+    }
+
+    private func formattedBPM(_ bpm: Double) -> String {
+        return String(format: "%.1f", bpm)
     }
 }
 
-struct PitchStepper_Previews: PreviewProvider {
+struct PitchAdjustmentView_Previews: PreviewProvider {
+    @State static var pitchShift: Double = 0
+    @State static var originalBPM: Double = 120
+    @State static var bpmInput: String = "120"
+
     static var previews: some View {
-        PitchStepper(pitchShift: .constant(0))
+        PitchAdjustmentView(
+            pitchShift: $pitchShift,
+            originalBPM: $originalBPM,
+            bpmInput: $bpmInput,
+            bpmLocked: true,
+            pitchRangeLimits: -6...6,
+            onPitchChange: {}
+        )
     }
 }

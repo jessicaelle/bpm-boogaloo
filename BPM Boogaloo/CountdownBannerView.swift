@@ -3,16 +3,24 @@ import SwiftUI
 struct CountdownBannerView: View {
     @Binding var countdownTime: TimeInterval?
 
+    // Constants
+    private let fontSize: CGFloat = 20
+    private let verticalPadding: CGFloat = 5
+    private let horizontalPadding: CGFloat = 15
+    private let cornerRadius: CGFloat = 8
+    private let greenThreshold: TimeInterval = 600  // 10 minutes in seconds
+    private let orangeThreshold: TimeInterval = 300  // 5 minutes in seconds
+
     var body: some View {
         if let countdownTime = countdownTime, countdownTime > 0 {
             HStack {
                 Text(timeString(from: countdownTime))
-                    .font(.system(size: 20, weight: .bold))
+                    .font(.system(size: fontSize, weight: .bold))
                     .foregroundColor(.white)
-                    .padding(.vertical, 5)
-                    .padding(.horizontal, 15)
-                    .background(colorForTimeRemaining(countdownTime)) // Background color based on time
-                    .cornerRadius(8)
+                    .padding(.vertical, verticalPadding)
+                    .padding(.horizontal, horizontalPadding)
+                    .background(colorForTimeRemaining(countdownTime))
+                    .cornerRadius(cornerRadius)
 
                 Spacer()
             }
@@ -30,10 +38,10 @@ struct CountdownBannerView: View {
     private func colorForTimeRemaining(_ timeRemaining: TimeInterval) -> Color {
         let minutesRemaining = timeRemaining / 60
 
-        if minutesRemaining > 10 {
+        if minutesRemaining > greenThreshold / 60 {
             return .green
-        } else if minutesRemaining > 5 {
-            return .orange // You can change this to .gold if you prefer
+        } else if minutesRemaining > orangeThreshold / 60 {
+            return .orange
         } else {
             return .red
         }

@@ -27,12 +27,20 @@ struct TransitionTipsView: View {
     @Binding var isEditing: Bool
     @AppStorage("wholeNumberBPM") var wholeNumberBPM: Bool = true
 
+    // Constants
+    private let listRowHeight: CGFloat = 44
+    private let horizontalPadding: CGFloat = 16
+    private let topPadding: CGFloat = 30
+    private let verticalSpacing: CGFloat = 10
+    private let bpmMultiplierLower: Double = 0.94
+    private let bpmMultiplierUpper: Double = 1.06
+
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: verticalSpacing) {
             HStack {
                 Text("BEAT GUIDE")
                     .font(.headline)
-                    .padding(.top, 30)
+                    .padding(.top, topPadding)
                 
                 Spacer()
                 
@@ -42,7 +50,7 @@ struct TransitionTipsView: View {
                     Image(systemName: "ellipsis.circle")
                         .font(.title2)
                 }
-                .padding(.top, 30)
+                .padding(.top, topPadding)
             }
             
             List {
@@ -75,10 +83,10 @@ struct TransitionTipsView: View {
             }
             .listStyle(PlainListStyle())
             .environment(\.editMode, isEditing ? .constant(.active) : .constant(.inactive))
-            .frame(minHeight: CGFloat(transitionTips.count) * 44)
+            .frame(minHeight: CGFloat(transitionTips.count) * listRowHeight)
             .frame(maxHeight: .infinity)
         }
-        .padding(.horizontal)
+        .padding(.horizontal, horizontalPadding)
         .onAppear {
             // Reorder tips with "Range" at the top
             transitionTips.sort { $0.title == "Range" || $1.title != "Range" }
@@ -93,8 +101,8 @@ struct TransitionTipsView: View {
     
     private func rangeText() -> String {
         guard let bpm = Double(bpmInput), bpm > 0 else { return "- BPM" }
-        let lower = bpm * 0.94
-        let upper = bpm * 1.06
+        let lower = bpm * bpmMultiplierLower
+        let upper = bpm * bpmMultiplierUpper
         return wholeNumberBPM ? "~\(Int(round(lower))) to ~\(Int(round(upper))) BPM" : "\(String(format: "%.2f", lower)) to \(String(format: "%.2f", upper)) BPM"
     }
     

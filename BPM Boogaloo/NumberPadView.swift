@@ -5,20 +5,28 @@ struct NumberPadView: View {
     @Environment(\.presentationMode) var presentationMode
     @State private var bpmInput: String = ""
 
+    // Constants
+    private let titleFontSize: CGFloat = 24
+    private let largeTitleFontSize: CGFloat = 34
+    private let paddingValue: CGFloat = 16
+    private let spacingValue: CGFloat = 20
+    private let cornerRadius: CGFloat = 10
+    private let buttonFontSize: CGFloat = 22
+
     var body: some View {
-        VStack(spacing: 20) {
+        VStack(spacing: spacingValue) {
             // Title
             Text("Enter BPM")
-                .font(.title)
-                .padding()
+                .font(.system(size: titleFontSize, weight: .bold))
+                .padding(paddingValue)
 
             // TextField for BPM Input
             TextField("BPM", text: $bpmInput)
                 .keyboardType(.numberPad)
-                .font(.largeTitle)
-                .padding()
+                .font(.system(size: largeTitleFontSize, weight: .bold))
+                .padding(paddingValue)
                 .background(Color(.systemGray6))
-                .cornerRadius(10)
+                .cornerRadius(cornerRadius)
                 .padding(.horizontal)
                 .multilineTextAlignment(.center)
                 .onAppear {
@@ -33,18 +41,18 @@ struct NumberPadView: View {
                 presentationMode.wrappedValue.dismiss()
             }) {
                 Text("Set BPM")
-                    .font(.title2)
-                    .padding()
+                    .font(.system(size: buttonFontSize, weight: .bold))
+                    .padding(paddingValue)
                     .frame(maxWidth: .infinity)
                     .background(Color.green)
                     .foregroundColor(.white)
-                    .cornerRadius(10)
+                    .cornerRadius(cornerRadius)
                     .padding(.horizontal)
             }
 
             Spacer()
         }
-        .padding()
+        .padding(paddingValue)
         .background(Color.black.edgesIgnoringSafeArea(.all))
     }
 }
@@ -56,4 +64,3 @@ struct NumberPadView_Previews: PreviewProvider {
         NumberPadView(bpm: $bpm)
     }
 }
-

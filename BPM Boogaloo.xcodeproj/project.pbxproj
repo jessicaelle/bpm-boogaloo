@@ -15,6 +15,7 @@
 		C80A0E452C7D402A0032CCF1 /* BPM_BoogalooUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C80A0E442C7D402A0032CCF1 /* BPM_BoogalooUITests.swift */; };
 		C80A0E472C7D402A0032CCF1 /* BPM_BoogalooUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C80A0E462C7D402A0032CCF1 /* BPM_BoogalooUITestsLaunchTests.swift */; };
 		C80A0E542C7D4E6E0032CCF1 /* NumberPadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C80A0E532C7D4E6E0032CCF1 /* NumberPadView.swift */; };
+		C83A8CB42C824E62003A4533 /* BPMInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C83A8CB32C824E62003A4533 /* BPMInputView.swift */; };
 		C85F97C82C7D997900370F82 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C85F97C72C7D997900370F82 /* SettingsView.swift */; };
 		C85F97CC2C7DAA0E00370F82 /* TransitionTipsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C85F97CB2C7DAA0E00370F82 /* TransitionTipsView.swift */; };
 		C85F97CE2C7DADB300370F82 /* BPMTapperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C85F97CD2C7DADB300370F82 /* BPMTapperView.swift */; };
@@ -54,6 +55,7 @@
 		C80A0E442C7D402A0032CCF1 /* BPM_BoogalooUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BPM_BoogalooUITests.swift; sourceTree = "<group>"; };
 		C80A0E462C7D402A0032CCF1 /* BPM_BoogalooUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BPM_BoogalooUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		C80A0E532C7D4E6E0032CCF1 /* NumberPadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberPadView.swift; sourceTree = "<group>"; };
+		C83A8CB32C824E62003A4533 /* BPMInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BPMInputView.swift; sourceTree = "<group>"; };
 		C85F97C72C7D997900370F82 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		C85F97CB2C7DAA0E00370F82 /* TransitionTipsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransitionTipsView.swift; sourceTree = "<group>"; };
 		C85F97CD2C7DADB300370F82 /* BPMTapperView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BPMTapperView.swift; sourceTree = "<group>"; };
@@ -125,6 +127,7 @@
 				C85F97D32C7E27BE00370F82 /* ClockView.swift */,
 				C85F97D52C7E354C00370F82 /* CountdownBannerView.swift */,
 				C85F97D72C7E4EB800370F82 /* TransitionTipRow.swift */,
+				C83A8CB32C824E62003A4533 /* BPMInputView.swift */,
 			);
 			path = "BPM Boogaloo";
 			sourceTree = "<group>";
@@ -287,6 +290,7 @@
 				C85F97D42C7E27BE00370F82 /* ClockView.swift in Sources */,
 				C80A0E2C2C7D40280032CCF1 /* ContentView.swift in Sources */,
 				C85F97C82C7D997900370F82 /* SettingsView.swift in Sources */,
+				C83A8CB42C824E62003A4533 /* BPMInputView.swift in Sources */,
 				C85F97CE2C7DADB300370F82 /* BPMTapperView.swift in Sources */,
 				C85F97D82C7E4EB800370F82 /* TransitionTipRow.swift in Sources */,
 				C85F97DA2C7E8B3700370F82 /* PitchFader.swift in Sources */,

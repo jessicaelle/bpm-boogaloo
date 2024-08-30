@@ -8,17 +8,26 @@ struct ClockView: View {
     @State private var isShowingTimePicker = false
     @State private var timer: Timer? = nil
 
+    // Constants
+    private let fontSize: CGFloat = 80
+    private let buttonSpacing: CGFloat = 20
+    private let paddingValue: CGFloat = 10
+    private let minScaleFactor: CGFloat = 0.5
+    private let timerInterval: TimeInterval = 1.0
+    private let secondsPerHour: Int = 3600
+    private let secondsPerMinute: Int = 60
+    
     var body: some View {
         VStack {
             if isCountdownStarted, let countdownTime = countdownTime {
                 Text(timeString(from: countdownTime))
-                    .font(.system(size: 80, weight: .bold))
+                    .font(.system(size: fontSize, weight: .bold))
                     .foregroundColor(isDarkMode ? .white : .black)  // Adjust color based on mode
-                    .minimumScaleFactor(0.5)
+                    .minimumScaleFactor(minScaleFactor)
                     .lineLimit(1)
                     .padding()
 
-                HStack(spacing: 20) {
+                HStack(spacing: buttonSpacing) {
                     Button(action: showTimePicker) {
                         Text("UPDATE")
                             .font(.title2)
@@ -26,7 +35,7 @@ struct ClockView: View {
                             .frame(maxWidth: .infinity)
                             .background(Color.blue)
                             .foregroundColor(.white)
-                            .cornerRadius(10)
+                            .cornerRadius(paddingValue)
                     }
 
                     Button(action: resetCountdown) {
@@ -36,12 +45,12 @@ struct ClockView: View {
                             .frame(maxWidth: .infinity)
                             .background(Color.red)
                             .foregroundColor(.white)
-                            .cornerRadius(10)
+                            .cornerRadius(paddingValue)
                     }
                 }
             } else {
                 Text("HH:MM")
-                    .font(.system(size: 80, weight: .bold))
+                    .font(.system(size: fontSize, weight: .bold))
                     .foregroundColor(.gray)
                     .onTapGesture {
                         showTimePicker()
@@ -55,7 +64,7 @@ struct ClockView: View {
                         .frame(maxWidth: .infinity)
                         .background(Color.blue)
                         .foregroundColor(.white)
-                        .cornerRadius(10)
+                        .cornerRadius(paddingValue)
                 }
             }
         }
@@ -81,7 +90,7 @@ struct ClockView: View {
                             .frame(maxWidth: .infinity)
                             .background(Color.green)
                             .foregroundColor(.white)
-                            .cornerRadius(10)
+                            .cornerRadius(paddingValue)
                     }
 
                     Button(action: dismissTimePicker) {
@@ -97,9 +106,9 @@ struct ClockView: View {
     }
 
     private func timeString(from interval: TimeInterval) -> String {
-        let hours = Int(interval) / 3600
-        let minutes = (Int(interval) % 3600) / 60
-        let seconds = Int(interval) % 60
+        let hours = Int(interval) / secondsPerHour
+        let minutes = (Int(interval) % secondsPerHour) / secondsPerMinute
+        let seconds = Int(interval) % secondsPerMinute
         return String(format: "%02d:%02d:%02d", hours, minutes, seconds)
     }
 
@@ -132,7 +141,7 @@ struct ClockView: View {
 
     private func startTimer() {
         timer?.invalidate()  // Stop any existing timer
-        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
+        timer = Timer.scheduledTimer(withTimeInterval: timerInterval, repeats: true) { _ in
             if let countdownTime = countdownTime {
                 if countdownTime > 0 {
                     self.countdownTime! -= 1
