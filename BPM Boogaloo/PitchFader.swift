@@ -1,12 +1,12 @@
 import SwiftUI
 
-struct PitchAdjustmentView: View {
-    @Binding var pitchShift: Double
-    @Binding var originalBPM: Double  // Preserve the original BPM for adjustments
-    @Binding var bpmInput: String
-    var bpmLocked: Bool
-    var pitchRangeLimits: ClosedRange<Double>
-    var onPitchChange: () -> Void
+internal struct PitchAdjustmentView: View {
+    @Binding internal var pitchShift: Double
+    @Binding internal var originalBPM: Double  // Preserve the original BPM for adjustments
+    @Binding internal var bpmInput: String
+    internal var bpmLocked: Bool
+    internal var pitchRangeLimits: ClosedRange<Double>
+    internal var onPitchChange: () -> Void
 
     // Constants
     private let captionFontSize: CGFloat = 12
@@ -15,7 +15,7 @@ struct PitchAdjustmentView: View {
     private let captionColor: Color = .orange
     private let stepValue: Double = 0.1
 
-    var body: some View {
+    internal var body: some View {
         if bpmLocked {
             VStack {
                 HStack {
@@ -39,6 +39,7 @@ struct PitchAdjustmentView: View {
         }
     }
 
+    // Methods used internally within this view
     private func updateDisplayedBPM() {
         guard bpmLocked else { return }
 
@@ -51,7 +52,7 @@ struct PitchAdjustmentView: View {
     }
 }
 
-struct PitchAdjustmentView_Previews: PreviewProvider {
+internal struct PitchAdjustmentView_Previews: PreviewProvider {
     @State static var pitchShift: Double = 0
     @State static var originalBPM: Double = 120
     @State static var bpmInput: String = "120"

@@ -1,10 +1,10 @@
 import SwiftUI
 
-struct NavView: View {
-    @Binding var showSettings: Bool
-    @Binding var countdownTime: TimeInterval?
+internal struct NavView: View {
+    @Binding internal var showSettings: Bool
+    @Binding internal var countdownTime: TimeInterval?
 
-    var body: some View {
+    internal var body: some View {
         TabView {
             // ContentView Tab
             ContentView(showSettings: $showSettings, countdownTime: $countdownTime)
@@ -27,7 +27,7 @@ struct NavView: View {
     }
 }
 
-struct NavView_Previews: PreviewProvider {
+internal struct NavView_Previews: PreviewProvider {
     static var previews: some View {
         NavView(showSettings: .constant(false), countdownTime: .constant(nil))
     }

@@ -1,11 +1,11 @@
 import SwiftUI
 
-struct BPMInputView: View {
-    @Binding var bpmInput: String
-    @Binding var bpmFontSize: CGFloat
-    @Binding var bpmColor: Color
-    var wholeNumberBPM: Bool
-    var isDarkMode: Bool
+internal struct BPMInputView: View {
+    @Binding internal var bpmInput: String
+    @Binding internal var bpmFontSize: CGFloat
+    @Binding internal var bpmColor: Color
+    internal var wholeNumberBPM: Bool
+    internal var isDarkMode: Bool
 
     // Constants
     private let baseFontSize: CGFloat = 100
@@ -13,7 +13,7 @@ struct BPMInputView: View {
     private let sampleText = "999.99"
     private let minFontSize: CGFloat = 10
 
-    var body: some View {
+    internal var body: some View {
         ZStack(alignment: .center) {
             Text("BPM")
                 .font(.system(size: baseFontSize, weight: .bold))
@@ -37,6 +37,7 @@ struct BPMInputView: View {
         .cornerRadius(paddingValue)
     }
 
+    // Private utility method
     private func calculateFontSizeForBPM(availableWidth: CGFloat) {
         let font = UIFont.systemFont(ofSize: baseFontSize, weight: .bold)
         var fontSize = baseFontSize
@@ -52,7 +53,7 @@ struct BPMInputView: View {
     }
 }
 
-struct BPMInputView_Previews: PreviewProvider {
+internal struct BPMInputView_Previews: PreviewProvider {
     @State static var bpmInput = "120"
     @State static var bpmFontSize: CGFloat = 100
     @State static var bpmColor: Color = .gray

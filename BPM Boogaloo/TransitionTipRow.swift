@@ -1,12 +1,12 @@
 import SwiftUI
 
-struct TransitionTipRow: View {
-    let title: String
-    let calculation: String
-    let isEditing: Bool
-    let bpmPlaceholderColor: Color // Color for the BPM label
+internal struct TransitionTipRow: View {
+    internal let title: String
+    internal let calculation: String
+    internal let isEditing: Bool
+    internal let bpmPlaceholderColor: Color // Color for the BPM label
 
-    var body: some View {
+    internal var body: some View {
         HStack {
             Text(title)
                 .foregroundColor(isEditing ? .primary : .gray)
@@ -17,7 +17,7 @@ struct TransitionTipRow: View {
     }
 }
 
-struct TransitionTipRow_Previews: PreviewProvider {
+internal struct TransitionTipRow_Previews: PreviewProvider {
     static var previews: some View {
         TransitionTipRow(
             title: "Halftime",

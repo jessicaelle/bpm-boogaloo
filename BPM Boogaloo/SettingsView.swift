@@ -1,16 +1,17 @@
 import SwiftUI
 
-struct SettingsView: View {
-    @AppStorage("isDarkMode") var isDarkMode: Bool = true
-    @AppStorage("wholeNumberBPM") var wholeNumberBPM: Bool = true
-    @AppStorage("orangeAlertMinutes") var orangeAlertMinutes: Double = 10
-    @AppStorage("redAlertMinutes") var redAlertMinutes: Double = 5
-    @AppStorage("pitchRange") var pitchRange: String = "±6%"  // Default pitch range
+internal struct SettingsView: View {
+    @AppStorage("isDarkMode") internal var isDarkMode: Bool = true
+    @AppStorage("wholeNumberBPM") internal var wholeNumberBPM: Bool = true
+    @AppStorage("orangeAlertMinutes") internal var orangeAlertMinutes: Double = 10
+    @AppStorage("redAlertMinutes") internal var redAlertMinutes: Double = 5
+    @AppStorage("pitchRange") internal var pitchRange: String = "±6%"  // Default pitch range
 
-    let pitchRanges = ["±6%", "±10%", "±16%", "WIDE"]
+    // Internal array of pitch ranges
+    private let pitchRanges = ["±6%", "±10%", "±16%", "WIDE"]
 
-    var body: some View {
-        NavigationView {  // Wrap the form in NavigationView for proper navigation title
+    internal var body: some View {
+        NavigationView {
             Form {
                 // Display Section
                 Section(header: Text("Display")) {
@@ -40,7 +41,7 @@ struct SettingsView: View {
                         Text("Minutes")
                     }
                 }
-                
+
                 // Pitch Fader Range Section
                 Section(header: Text("Pitch Fader Range")) {
                     Picker("Select Pitch Range", selection: $pitchRange) {
@@ -48,15 +49,15 @@ struct SettingsView: View {
                             Text($0)
                         }
                     }
-                    .pickerStyle(MenuPickerStyle())  // Use dropdown style
+                    .pickerStyle(MenuPickerStyle())
                 }
             }
-            .navigationTitle("Settings")  // Ensure navigation title is correctly set
+            .navigationTitle("Settings")
         }
     }
 }
 
-struct SettingsView_Previews: PreviewProvider {
+internal struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
         SettingsView()
     }

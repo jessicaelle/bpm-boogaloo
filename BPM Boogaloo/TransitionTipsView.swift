@@ -1,31 +1,31 @@
 import SwiftUI
 
-struct TransitionTip: Identifiable {
-    let id = UUID()
-    let title: String
-    let multiplier: Double?
-    let range: Bool
-    var hidden: Bool = false
-    var calculatedBPM: String = "- BPM"
+internal struct TransitionTip: Identifiable {
+    internal let id = UUID()
+    internal let title: String
+    internal let multiplier: Double?
+    internal let range: Bool
+    internal var hidden: Bool = false
+    internal var calculatedBPM: String = "- BPM"
 
-    init(title: String, multiplier: Double) {
+    internal init(title: String, multiplier: Double) {
         self.title = title
         self.multiplier = multiplier
         self.range = false
     }
 
-    init(title: String, range: Bool) {
+    internal init(title: String, range: Bool) {
         self.title = title
         self.multiplier = nil
         self.range = range
     }
 }
 
-struct TransitionTipsView: View {
-    @Binding var transitionTips: [TransitionTip]
-    @Binding var bpmInput: String
-    @Binding var isEditing: Bool
-    @AppStorage("wholeNumberBPM") var wholeNumberBPM: Bool = true
+internal struct TransitionTipsView: View {
+    @Binding internal var transitionTips: [TransitionTip]
+    @Binding internal var bpmInput: String
+    @Binding internal var isEditing: Bool
+    @AppStorage("wholeNumberBPM") internal var wholeNumberBPM: Bool = true
 
     // Constants
     private let listRowHeight: CGFloat = 44
@@ -35,7 +35,7 @@ struct TransitionTipsView: View {
     private let bpmMultiplierLower: Double = 0.94
     private let bpmMultiplierUpper: Double = 1.06
 
-    var body: some View {
+    internal var body: some View {
         VStack(alignment: .leading, spacing: verticalSpacing) {
             HStack {
                 Text("BEAT GUIDE")
@@ -93,6 +93,7 @@ struct TransitionTipsView: View {
         }
     }
 
+    // Private utility methods
     private func formattedBPM(multiplier: Double) -> String {
         guard let bpm = Double(bpmInput), bpm > 0 else { return "- BPM" }
         let calculatedBPM = bpm * multiplier
@@ -110,7 +111,7 @@ struct TransitionTipsView: View {
         transitionTips.move(fromOffsets: source, toOffset: destination)
     }
 
-    func updateTransitionTipsBPM(_ newBPM: Double) {
+    internal func updateTransitionTipsBPM(_ newBPM: Double) {
         for i in 0..<transitionTips.count {
             if let multiplier = transitionTips[i].multiplier {
                 transitionTips[i].calculatedBPM = formattedBPM(multiplier: multiplier)
@@ -121,7 +122,7 @@ struct TransitionTipsView: View {
     }
 }
 
-struct TransitionTipsView_Previews: PreviewProvider {
+internal struct TransitionTipsView_Previews: PreviewProvider {
     static var previews: some View {
         TransitionTipsView(
             transitionTips: .constant([

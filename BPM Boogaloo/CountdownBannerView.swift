@@ -1,7 +1,7 @@
 import SwiftUI
 
-struct CountdownBannerView: View {
-    @Binding var countdownTime: TimeInterval?
+internal struct CountdownBannerView: View {
+    @Binding internal var countdownTime: TimeInterval?
 
     // Constants
     private let fontSize: CGFloat = 20
@@ -11,7 +11,7 @@ struct CountdownBannerView: View {
     private let greenThreshold: TimeInterval = 600  // 10 minutes in seconds
     private let orangeThreshold: TimeInterval = 300  // 5 minutes in seconds
 
-    var body: some View {
+    internal var body: some View {
         if let countdownTime = countdownTime, countdownTime > 0 {
             HStack {
                 Text(timeString(from: countdownTime))
@@ -28,6 +28,7 @@ struct CountdownBannerView: View {
         }
     }
 
+    // Private utility methods
     private func timeString(from interval: TimeInterval) -> String {
         let hours = Int(interval) / 3600
         let minutes = (Int(interval) % 3600) / 60
@@ -48,7 +49,7 @@ struct CountdownBannerView: View {
     }
 }
 
-struct CountdownBannerView_Previews: PreviewProvider {
+internal struct CountdownBannerView_Previews: PreviewProvider {
     static var previews: some View {
         CountdownBannerView(countdownTime: .constant(3600))
     }

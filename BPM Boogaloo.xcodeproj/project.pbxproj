@@ -14,7 +14,6 @@
 		C80A0E3B2C7D402A0032CCF1 /* BPM_BoogalooTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C80A0E3A2C7D402A0032CCF1 /* BPM_BoogalooTests.swift */; };
 		C80A0E452C7D402A0032CCF1 /* BPM_BoogalooUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C80A0E442C7D402A0032CCF1 /* BPM_BoogalooUITests.swift */; };
 		C80A0E472C7D402A0032CCF1 /* BPM_BoogalooUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C80A0E462C7D402A0032CCF1 /* BPM_BoogalooUITestsLaunchTests.swift */; };
-		C80A0E542C7D4E6E0032CCF1 /* NumberPadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C80A0E532C7D4E6E0032CCF1 /* NumberPadView.swift */; };
 		C83A8CB42C824E62003A4533 /* BPMInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C83A8CB32C824E62003A4533 /* BPMInputView.swift */; };
 		C85F97C82C7D997900370F82 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C85F97C72C7D997900370F82 /* SettingsView.swift */; };
 		C85F97CC2C7DAA0E00370F82 /* TransitionTipsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C85F97CB2C7DAA0E00370F82 /* TransitionTipsView.swift */; };
@@ -54,7 +53,6 @@
 		C80A0E402C7D402A0032CCF1 /* BPM BoogalooUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "BPM BoogalooUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C80A0E442C7D402A0032CCF1 /* BPM_BoogalooUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BPM_BoogalooUITests.swift; sourceTree = "<group>"; };
 		C80A0E462C7D402A0032CCF1 /* BPM_BoogalooUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BPM_BoogalooUITestsLaunchTests.swift; sourceTree = "<group>"; };
-		C80A0E532C7D4E6E0032CCF1 /* NumberPadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberPadView.swift; sourceTree = "<group>"; };
 		C83A8CB32C824E62003A4533 /* BPMInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BPMInputView.swift; sourceTree = "<group>"; };
 		C85F97C72C7D997900370F82 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		C85F97CB2C7DAA0E00370F82 /* TransitionTipsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransitionTipsView.swift; sourceTree = "<group>"; };
@@ -118,7 +116,6 @@
 				C80A0E2B2C7D40280032CCF1 /* ContentView.swift */,
 				C80A0E2D2C7D40290032CCF1 /* Assets.xcassets */,
 				C80A0E2F2C7D40290032CCF1 /* Preview Content */,
-				C80A0E532C7D4E6E0032CCF1 /* NumberPadView.swift */,
 				C85F97C72C7D997900370F82 /* SettingsView.swift */,
 				C85F97D92C7E8B3700370F82 /* PitchFader.swift */,
 				C85F97CB2C7DAA0E00370F82 /* TransitionTipsView.swift */,
@@ -297,7 +294,6 @@
 				C85F97CC2C7DAA0E00370F82 /* TransitionTipsView.swift in Sources */,
 				C85F97D62C7E354C00370F82 /* CountdownBannerView.swift in Sources */,
 				C85F97D22C7E218A00370F82 /* NavView.swift in Sources */,
-				C80A0E542C7D4E6E0032CCF1 /* NumberPadView.swift in Sources */,
 				C80A0E2A2C7D40280032CCF1 /* BPM_BoogalooApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

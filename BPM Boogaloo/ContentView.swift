@@ -1,12 +1,12 @@
 import SwiftUI
 
-struct ContentView: View {
-    @Binding var showSettings: Bool
-    @Binding var countdownTime: TimeInterval?
-    @AppStorage("isDarkMode") var isDarkMode: Bool = true
-    @AppStorage("sliderPosition") var sliderPosition: String = "Right"
-    @AppStorage("wholeNumberBPM") var wholeNumberBPM: Bool = true
-    @AppStorage("pitchRange") var pitchRange: String = "±6%"
+internal struct ContentView: View {
+    @Binding internal var showSettings: Bool
+    @Binding internal var countdownTime: TimeInterval?
+    @AppStorage("isDarkMode") internal var isDarkMode: Bool = true
+    @AppStorage("sliderPosition") internal var sliderPosition: String = "Right"
+    @AppStorage("wholeNumberBPM") internal var wholeNumberBPM: Bool = true
+    @AppStorage("pitchRange") internal var pitchRange: String = "±6%"
 
     @State private var bpmInput: String = ""
     @State private var originalBPM: Double = 0.0
@@ -24,7 +24,7 @@ struct ContentView: View {
     ]
     @State private var isEditing: Bool = false
 
-    var body: some View {
+    internal var body: some View {
         VStack(spacing: 20) {
             if countdownTime != nil {
                 CountdownBannerView(countdownTime: $countdownTime)
@@ -46,7 +46,7 @@ struct ContentView: View {
                 bpmLocked: $bpmLocked,
                 bpmColor: $bpmColor,
                 originalBPM: $originalBPM,
-                isDarkMode: isDarkMode  // Pass isDarkMode to BPMTapperView
+                isDarkMode: isDarkMode
             )
 
             PitchAdjustmentView(
@@ -55,7 +55,7 @@ struct ContentView: View {
                 bpmInput: $bpmInput,
                 bpmLocked: bpmLocked,
                 pitchRangeLimits: pitchRangeLimits(),
-                onPitchChange: updateTransitionTipsBPM  // Update tips after pitch change
+                onPitchChange: updateTransitionTipsBPM
             )
 
             TransitionTipsView(
@@ -74,6 +74,7 @@ struct ContentView: View {
         }
     }
 
+    // Private utility methods that are only used within this view
     private func pitchRangeLimits() -> ClosedRange<Double> {
         switch pitchRange {
         case "±10%":

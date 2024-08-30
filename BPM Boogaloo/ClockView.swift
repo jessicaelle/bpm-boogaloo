@@ -1,8 +1,8 @@
 import SwiftUI
 
-struct ClockView: View {
-    @AppStorage("isDarkMode") var isDarkMode: Bool = true
-    @Binding var countdownTime: TimeInterval?
+internal struct ClockView: View {
+    @AppStorage("isDarkMode") internal var isDarkMode: Bool = true
+    @Binding internal var countdownTime: TimeInterval?
     @State private var selectedTime: Date = Date()  // Non-optional Date for time picker
     @State private var isCountdownStarted = false
     @State private var isShowingTimePicker = false
@@ -17,12 +17,12 @@ struct ClockView: View {
     private let secondsPerHour: Int = 3600
     private let secondsPerMinute: Int = 60
     
-    var body: some View {
+    internal var body: some View {
         VStack {
             if isCountdownStarted, let countdownTime = countdownTime {
                 Text(timeString(from: countdownTime))
                     .font(.system(size: fontSize, weight: .bold))
-                    .foregroundColor(isDarkMode ? .white : .black)  // Adjust color based on mode
+                    .foregroundColor(isDarkMode ? .white : .black)
                     .minimumScaleFactor(minScaleFactor)
                     .lineLimit(1)
                     .padding()
@@ -105,6 +105,7 @@ struct ClockView: View {
         .preferredColorScheme(isDarkMode ? .dark : .light)  // Apply dark mode setting
     }
 
+    // Private utility methods
     private func timeString(from interval: TimeInterval) -> String {
         let hours = Int(interval) / secondsPerHour
         let minutes = (Int(interval) % secondsPerHour) / secondsPerMinute
@@ -158,7 +159,7 @@ struct ClockView: View {
     }
 }
 
-struct ClockView_Previews: PreviewProvider {
+internal struct ClockView_Previews: PreviewProvider {
     static var previews: some View {
         ClockView(countdownTime: .constant(3600))
     }

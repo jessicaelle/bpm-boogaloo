@@ -1,18 +1,22 @@
 import SwiftUI
 
-struct BPMTapperView: View {
-    @Binding var bpmInput: String
-    @Binding var bpmLocked: Bool
-    @Binding var bpmColor: Color
-    @Binding var originalBPM: Double
-    var isDarkMode: Bool
-    @AppStorage("wholeNumberBPM") var wholeNumberBPM: Bool = true
+internal struct BPMTapperView: View {
+    @Binding internal var bpmInput: String
+    @Binding internal var bpmLocked: Bool
+    @Binding internal var bpmColor: Color
+    @Binding internal var originalBPM: Double
+    internal var isDarkMode: Bool
+    @AppStorage("wholeNumberBPM") internal var wholeNumberBPM: Bool = true
 
     @State private var isTapping: Bool = false
     @State private var tapTimes: [Date] = []
     @State private var lastTapTime: Date? = nil
 
-    // Constants
+    // Constants for flashing speed (using your updated values)
+    private let flashAnimationDuration: TimeInterval = 0.02  // Very fast animation duration
+    private let flashDelay: TimeInterval = 0.08  // Minimal delay between flashes
+
+    // Other constants
     private let minTapsForBPMCalculation = 4
     private let maxTapsToKeep = 12
     private let tapInactivityThreshold: TimeInterval = 2.0
@@ -20,10 +24,8 @@ struct BPMTapperView: View {
     private let buttonSpacing: CGFloat = 20
     private let buttonPadding: CGFloat = 10
     private let cornerRadius: CGFloat = 10
-    private let flashAnimationDuration: TimeInterval = 0.02
-    private let flashDelay: TimeInterval = 0.08
 
-    var body: some View {
+    internal var body: some View {
         HStack(spacing: buttonSpacing) {
             Button(action: {
                 if bpmLocked {
@@ -61,6 +63,7 @@ struct BPMTapperView: View {
         }
     }
 
+    // Methods used internally within this view
     private func registerTap() {
         guard !bpmLocked else {
             print("Tap ignored: BPM is locked.")
@@ -75,7 +78,7 @@ struct BPMTapperView: View {
             flashPlaceholder()
         } else {
             calculateBPM()
-            updateBPMColor()  // Update BPM color based on the number of taps
+            updateBPMColor()
         }
 
         isTapping = true
@@ -88,7 +91,7 @@ struct BPMTapperView: View {
         let averageInterval = intervals.reduce(0, +) / Double(intervals.count)
         let bpm = 60.0 / averageInterval
         bpmInput = formattedBPM(bpm)
-        originalBPM = bpm  // Store the original BPM for pitch adjustments
+        originalBPM = bpm
 
         if tapTimes.count > maxTapsToKeep {
             tapTimes.removeFirst(tapTimes.count - maxTapsToKeep)
@@ -134,7 +137,7 @@ struct BPMTapperView: View {
         bpmLocked = false
         bpmColor = .white
         lastTapTime = nil
-        originalBPM = 0.0  // Ensure this resets when BPM is reset
+        originalBPM = 0.0
     }
 
     private func lockBPM() {
@@ -152,7 +155,7 @@ struct BPMTapperView: View {
     }
 }
 
-struct BPMTapperView_Previews: PreviewProvider {
+internal struct BPMTapperView_Previews: PreviewProvider {
     static var previews: some View {
         BPMTapperView(bpmInput: .constant("120"), bpmLocked: .constant(false), bpmColor: .constant(.gray), originalBPM: .constant(0), isDarkMode: true)
     }
